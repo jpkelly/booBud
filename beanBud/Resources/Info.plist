@@ -21,7 +21,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>BeanBud needs Bluetooth to connect to your Bookoo coffee scale for real-time weight measurement.</string>
+	<string>booBud needs Bluetooth to connect to your Bookoo coffee scale for real-time weight measurement.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

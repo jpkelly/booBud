@@ -25,7 +25,7 @@ final class ScaleBLEController: NSObject {
 
     private var centralManager: CBCentralManager!
     private var commandCharacteristic: CBCharacteristic?
-    private let logger = Logger(subsystem: "com.beanbud.ble", category: "ScaleBLEController")
+    private let logger = Logger(subsystem: "com.boobud.ble", category: "ScaleBLEController")
 
     /// Minimum RSSI threshold to filter out distant devices.
     private let rssiThreshold: NSNumber = -80

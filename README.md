@@ -1,4 +1,4 @@
-# BeanBud ☕ by DeepSeek
+# booBud ☕
 
 An iOS app that turns your **Bookoo Mini Scale** into a dedicated coffee brewing companion — real-time weight display, brew timer, and tare controls over Bluetooth.
 
@@ -25,7 +25,7 @@ An iOS app that turns your **Bookoo Mini Scale** into a dedicated coffee brewing
 
 ## Install on Your iPhone (no App Store, no developer account)
 
-1. Open `beanBud.xcodeproj` in Xcode
+1. Open `booBud.xcodeproj` in Xcode
 2. Plug in your iPhone, select it from the device dropdown
 3. Sign in with your Apple ID (Xcode → Settings → Accounts)
 4. Press **⌘R** to build and install
@@ -35,7 +35,7 @@ The app stays installed for 7 days — just rebuild to refresh.
 
 ## How It Works
 
-BeanBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using the [official open-source protocol](https://github.com/BooKooCode/OpenSource):
+booBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using the [official open-source protocol](https://github.com/BooKooCode/OpenSource):
 
 - **Service UUID**: `0xFFE0`
 - **Weight notifications**: characteristic `0xFF11` (20-byte packets with grams, flow rate, battery, timer)
@@ -44,7 +44,7 @@ BeanBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using 
 ## Project Structure
 
 ```
-beanBud/
+booBud/
 ├── App/              # @main app entry
 ├── BLE/              # BookooProtocol + ScaleBLEController
 ├── Models/           # WeightReading, WeightUnit, BrewTimerState
