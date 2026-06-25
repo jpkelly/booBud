@@ -21,6 +21,19 @@ final class ScaleViewModel {
     /// Weight data points recorded while timer is running: (elapsed seconds, weight in grams).
     var weightHistory: [(elapsed: Double, weight: Double)] = []
 
+    /// Auto-stop timer settings.
+    var autoStopEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: "autoStopEnabled") }
+        set { UserDefaults.standard.set(newValue, forKey: "autoStopEnabled") }
+    }
+    var autoStopSeconds: Double {
+        get {
+            let val = UserDefaults.standard.double(forKey: "autoStopSeconds")
+            return val > 0 ? val : 30
+        }
+        set { UserDefaults.standard.set(newValue, forKey: "autoStopSeconds") }
+    }
+
     /// Whether the graph should be visible.
     var showGraph: Bool {
         brewTimer.isRunning || weightHistory.count > 1
@@ -168,12 +181,19 @@ final class ScaleViewModel {
         stopDisplayTimer()
         displayTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             Task { @MainActor in
-                self?.brewTimer.tick()
-                // Sample current weight for graph every 0.1s while timer runs
-                if let reading = self?.currentReading {
-                    self?.weightHistory.append((elapsed: self?.brewTimer.elapsed ?? 0, weight: reading.grams))
+                guard let self else { return }
+                self.brewTimer.tick()
+                // Sample current weight for graph
+                if let reading = self.currentReading {
+                    self.weightHistory.append((elapsed: self.brewTimer.elapsed, weight: reading.grams))
                 } else {
-                    self?.weightHistory.append((elapsed: self?.brewTimer.elapsed ?? 0, weight: 0))
+                    self.weightHistory.append((elapsed: self.brewTimer.elapsed, weight: 0))
+                }
+                // Auto-stop check
+                if self.autoStopEnabled && self.brewTimer.elapsed >= self.autoStopSeconds {
+                    self.brewTimer.stop()
+                    self.stopDisplayTimer()
+                    self.bleController.sendStopTimer()
                 }
             }
         }

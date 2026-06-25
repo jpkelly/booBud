@@ -18,6 +18,21 @@ struct SettingsView: View {
                     .pickerStyle(.segmented)
                 }
 
+                Section("Auto-Stop Timer") {
+                    Toggle("Auto-stop", isOn: $viewModel.autoStopEnabled)
+                    if viewModel.autoStopEnabled {
+                        HStack {
+                            Text("Stop after")
+                            Spacer()
+                            Text("\(Int(viewModel.autoStopSeconds))s")
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $viewModel.autoStopSeconds, in: 5...120, step: 5) {
+                            Text("Seconds")
+                        }
+                    }
+                }
+
                 Section {
                     HStack {
                         Text("Battery")
@@ -44,7 +59,7 @@ struct SettingsView: View {
                 }
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.large])
     }
 
     private var versionString: String {
