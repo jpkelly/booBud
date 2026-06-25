@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04FF972756ACD993E4A31847 /* BeanBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E663BAA0896D1B5F8D710B4 /* BeanBudApp.swift */; };
+		04FF972756ACD993E4A31847 /* BooBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */; };
 		0C849B0C4874D59E093D0588 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92A83F2C70C397207E3D06C /* ControlBarView.swift */; };
 		0FDE97C6A89E6E809E423D95 /* ScaleReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8985AB58F1A75882313EF8F7 /* ScaleReading.swift */; };
 		3088F87598DD717552767F91 /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8B9B7201B6DDFB7C5D5096 /* ScaleViewModel.swift */; };
@@ -31,7 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0E663BAA0896D1B5F8D710B4 /* BeanBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeanBudApp.swift; sourceTree = "<group>"; };
+		0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooBudApp.swift; sourceTree = "<group>"; };
 		0FAC4705CBD32DAFD5FAFDC1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		157973120A41547F653A72B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2A953FBB4306314B46728366 /* BookooProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookooProtocol.swift; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		043ED543EF022C791F512246 /* beanBud */ = {
+		043ED543EF022C791F512246 /* booBud */ = {
 			isa = PBXGroup;
 			children = (
 				928CEE6E057B992D347163DB /* Assets.xcassets */,
@@ -68,7 +68,7 @@
 				B3106A990BFBB22B1D9BB434 /* ViewModels */,
 				08EDD75522C67D37CA2B2F7C /* Views */,
 			);
-			path = beanBud;
+			path = booBud;
 			sourceTree = "<group>";
 		};
 		08EDD75522C67D37CA2B2F7C /* Views */ = {
@@ -128,7 +128,7 @@
 		AF8E017C02B95857FAB49A5C = {
 			isa = PBXGroup;
 			children = (
-				043ED543EF022C791F512246 /* beanBud */,
+				043ED543EF022C791F512246 /* booBud */,
 				89794CA74792CDC06D63E7AE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,7 +144,7 @@
 		EF01FBBC46B3AA838AB31FCD /* App */ = {
 			isa = PBXGroup;
 			children = (
-				0E663BAA0896D1B5F8D710B4 /* BeanBudApp.swift */,
+				0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */,
 				603117508E4DD1D5E542C78A /* Color+Hex.swift */,
 			);
 			path = App;
@@ -244,7 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04FF972756ACD993E4A31847 /* BeanBudApp.swift in Sources */,
+				04FF972756ACD993E4A31847 /* BooBudApp.swift in Sources */,
 				EB9A0B185762D28452BCA0DE /* BookooProtocol.swift in Sources */,
 				4B43B00770EAFD9F8787285E /* BrewTimerState.swift in Sources */,
 				A23774187790F944A172A154 /* BrewTimerView.swift in Sources */,
@@ -273,7 +273,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = beanBud/Resources/Info.plist;
+				INFOPLIST_FILE = booBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -292,7 +292,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = beanBud/Resources/Info.plist;
+				INFOPLIST_FILE = booBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
