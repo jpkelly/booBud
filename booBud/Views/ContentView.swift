@@ -100,7 +100,7 @@ struct ContentView: View {
                     .frame(width: 8, height: 8)
 
                 Text(connectionLabel)
-                    .font(.subheadline)
+                    .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
 
@@ -108,8 +108,8 @@ struct ContentView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
         }
