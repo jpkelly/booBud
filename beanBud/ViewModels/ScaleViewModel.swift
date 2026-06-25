@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+@preconcurrency import CoreBluetooth
 import os
 
 /// Central ViewModel — owns BLE controller, timer, and all UI-bound state.
@@ -29,7 +30,10 @@ final class ScaleViewModel {
     }
 
     var isScaleReady: Bool {
-        connectionState == .connected && currentReading != nil
+        if case .connected = connectionState, currentReading != nil {
+            return true
+        }
+        return false
     }
 
     var batteryIcon: String {
@@ -70,6 +74,14 @@ final class ScaleViewModel {
             if rssi > -50 { return "📶📶📶" }
             if rssi > -65 { return "📶📶" }
             return "📶"
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+
+        static func == (lhs: DiscoveredScale, rhs: DiscoveredScale) -> Bool {
+            lhs.id == rhs.id
         }
     }
 

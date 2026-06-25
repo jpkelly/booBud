@@ -1,4 +1,5 @@
 import Foundation
+@preconcurrency import CoreBluetooth
 
 /// Complete Bookoo Mini Scale BLE protocol implementation.
 /// Based on official protocol docs: https://github.com/BooKooCode/OpenSource

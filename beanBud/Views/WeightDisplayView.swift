@@ -6,7 +6,7 @@ struct WeightDisplayView: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            HStack(alignment: .lastBaseline, spacing: 8) {
+            HStack(alignment: .lastTextBaseline, spacing: 8) {
                 Text(viewModel.displayWeight)
                     .font(.system(size: 80, weight: .thin, design: .rounded))
                     .monospacedDigit()
