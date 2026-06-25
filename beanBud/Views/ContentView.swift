@@ -8,7 +8,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground)
+            Color(uiColor: .darkGray)
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
