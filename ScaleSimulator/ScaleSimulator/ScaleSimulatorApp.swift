@@ -525,8 +525,9 @@ struct LogEntry: Identifiable {
 
 // MARK: - Continuous Slider
 
-/// NSSlider wrapper with `isContinuous = true`. Guards against feedback loop
-/// where SwiftUI re-renders reset the knob position mid-drag.
+/// NSSlider wrapper with `isContinuous = true`. Uses value comparison
+/// to avoid resetting the knob position during drag (SwiftUI batches
+/// updateNSView calls asynchronously, so boolean flags don't work).
 struct ContinuousSlider: NSViewRepresentable {
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -539,9 +540,11 @@ struct ContinuousSlider: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSSlider, context: Context) {
-        // Only update from outside — skip if the slider itself triggered the change
-        if !context.coordinator.isUpdating {
+        // Only move the knob if the value changed from outside the slider
+        // (e.g. Tare button). During drag, sliderValue == value, so skip.
+        if abs(context.coordinator.sliderValue - value) > 0.01 {
             nsView.doubleValue = value
+            context.coordinator.sliderValue = value
         }
     }
 
@@ -551,14 +554,13 @@ struct ContinuousSlider: NSViewRepresentable {
 
     final class Coordinator: NSObject {
         var value: Binding<Double>
-        var isUpdating = false
+        var sliderValue: Double = 0
 
         init(value: Binding<Double>) { self.value = value }
 
         @MainActor @objc func changed(_ sender: NSSlider) {
-            isUpdating = true
+            sliderValue = sender.doubleValue
             value.wrappedValue = sender.doubleValue
-            isUpdating = false
         }
     }
 }
