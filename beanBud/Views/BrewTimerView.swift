@@ -12,19 +12,8 @@ struct BrewTimerView: View {
                 .monospacedDigit()
                 .foregroundStyle(viewModel.brewTimer.isRunning ? Color.orange : Color.secondary)
 
-            // Controls row: Reset | Play/Stop | Tare
+            // Controls: Play + Tare centered, Reset off to the side
             HStack(spacing: 24) {
-                // Reset
-                Button {
-                    viewModel.resetTimer()
-                } label: {
-                    Image(systemName: "arrow.counterclockwise")
-                        .font(.title3)
-                        .frame(width: 44, height: 44)
-                }
-                .tint(.secondary)
-                .disabled(viewModel.brewTimer.elapsed == 0)
-
                 // Start / Stop
                 Button {
                     viewModel.toggleTimer()
@@ -50,6 +39,19 @@ struct BrewTimerView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .overlay(alignment: .leading) {
+                Button {
+                    viewModel.resetTimer()
+                } label: {
+                    Image(systemName: "arrow.counterclockwise")
+                        .font(.title3)
+                        .frame(width: 44, height: 44)
+                }
+                .tint(.secondary)
+                .disabled(viewModel.brewTimer.elapsed == 0)
+                .padding(.leading, 16)
             }
         }
         .padding()
