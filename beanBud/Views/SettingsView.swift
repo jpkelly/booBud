@@ -24,7 +24,11 @@ struct SettingsView: View {
                         HStack {
                             Text("Stop after")
                             Spacer()
-                            Text("\(Int(viewModel.autoStopSeconds))s")
+                            TextField("", value: $viewModel.autoStopSeconds, format: .number)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 60)
+                            Text("s")
                                 .foregroundStyle(.secondary)
                         }
                         Slider(value: $viewModel.autoStopSeconds, in: 5...120, step: 5) {

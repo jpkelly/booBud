@@ -44,7 +44,7 @@
 		B67259E82368A423E012C3F6 /* WeightGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightGraphView.swift; sourceTree = "<group>"; };
 		BB43073FB730A6F8F9C36C24 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		DA5D99F0301C8E2D5CE39228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E1CCAFD231608A3CC82AF005 /* beanBud.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = beanBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1CCAFD231608A3CC82AF005 /* beanBud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beanBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6B08D834CA3839CABB9538C /* ScaleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleViewModel.swift; sourceTree = "<group>"; };
 		E9915A5D20DDAD92E3E342F2 /* BookooProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookooProtocol.swift; sourceTree = "<group>"; };
 		EEBD817AAF8332B3E2F7AC6B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -177,8 +177,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 5E2D806EF2C0C7A841317C0E /* Build configuration list for PBXProject "beanBud" */;
 			developmentRegion = en;
@@ -331,6 +329,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = beanBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -350,6 +349,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = beanBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
