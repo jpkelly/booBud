@@ -29,15 +29,15 @@ struct ContentView: View {
                 WeightDisplayView(viewModel: viewModel)
 
                 BrewTimerView(viewModel: viewModel)
+                    .padding(.bottom, 8)
 
-                // Real-time weight graph — always visible
                 WeightGraphView(data: viewModel.weightHistory, displayUnit: viewModel.displayUnit)
-                    .frame(height: 160)
+                    .frame(height: 200)
                     .padding(.horizontal, 16)
-                    .padding(.top, 4)
 
                 Spacer()
             }
+            .padding(.top, 12)
         }
         .sheet(isPresented: $showDevicePicker) {
             DeviceDiscoveryView(viewModel: viewModel)
