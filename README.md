@@ -11,9 +11,11 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 - **Stability indicator** — shows when weight settles
 - **Battery level** from the scale
 
-## Screenshots
+## Screens
 
-<img src="Screenshot.png" alt="booBud weight display" width="320" />
+| Weight Display | Brew Timer | Device Picker |
+|---------------|------------|---------------|
+| Large weight + unit | Elapsed time + controls | Scan & connect to nearby scales |
 
 ## Requirements
 
