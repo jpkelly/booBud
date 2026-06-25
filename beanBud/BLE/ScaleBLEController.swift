@@ -37,10 +37,23 @@ final class ScaleBLEController: NSObject {
         centralManager = CBCentralManager(delegate: self, queue: .main)
     }
 
+    /// Whether Bluetooth LE is available on this device (always false on simulator).
+    static var isBluetoothAvailable: Bool {
+        #if targetEnvironment(simulator)
+        return false
+        #else
+        return true
+        #endif
+    }
+
     // MARK: - Public API
 
     /// Start scanning for Bookoo scales. Requires Bluetooth to be powered on.
     func startScanning() {
+        guard ScaleBLEController.isBluetoothAvailable else {
+            logger.info("Simulator detected — BLE not available, skipping scan")
+            return
+        }
         guard centralManager.state == .poweredOn else {
             logger.warning("Cannot scan — Bluetooth state is \(String(describing: self.centralManager.state))")
             return

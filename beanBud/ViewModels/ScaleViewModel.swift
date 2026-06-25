@@ -94,6 +94,10 @@ final class ScaleViewModel {
     // MARK: - Actions
 
     func startScanning() {
+        guard ScaleBLEController.isBluetoothAvailable else {
+            connectionState = .connected("Simulator")
+            return
+        }
         discoveredScales.removeAll()
         connectionState = .scanning
         bleController.startScanning()
