@@ -338,6 +338,14 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         dataTimer = nil
     }
 
+    /// Flow rate sent over BLE — artificially elevated during weight animation
+    /// so the iPhone app detects "measuring" state (isStable requires flow < 0.5).
+    private var effectiveFlowRate: Double {
+        let isAnimating = weightGrams != targetWeight || flowRate != targetFlow
+        if isAnimating { return 0.6 }  // > 0.5 triggers "Measuring" on iPhone
+        return flowRate
+    }
+
     private func sendWeightNotification() {
         guard isConnected,
               connectedCentral != nil else { return }
@@ -346,7 +354,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         let packet = BookooBLE.buildWeightPacket(
             milliseconds: ms,
             weightGrams: weightGrams,
-            flowRate: flowRate,
+            flowRate: effectiveFlowRate,
             batteryPercent: UInt8(batteryPercent),
             unit: unit == .grams ? 0x01 : 0x02
         )
