@@ -26,18 +26,20 @@ struct ContentView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 4)
 
+                Spacer()
+                    .frame(height: 20)
+
                 WeightDisplayView(viewModel: viewModel)
 
                 BrewTimerView(viewModel: viewModel)
-                    .padding(.bottom, 8)
 
                 WeightGraphView(data: viewModel.weightHistory, displayUnit: viewModel.displayUnit)
                     .frame(height: 200)
                     .padding(.horizontal, 16)
+                    .padding(.top, 12)
 
                 Spacer()
             }
-            .padding(.top, 12)
         }
         .sheet(isPresented: $showDevicePicker) {
             DeviceDiscoveryView(viewModel: viewModel)
