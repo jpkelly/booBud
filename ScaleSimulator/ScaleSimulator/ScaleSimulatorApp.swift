@@ -169,28 +169,43 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var peripheralManager: CBPeripheralManager!
 
     // Simulated scale state
-    var weightGrams: Double = 0.0 {
-        didSet {
-            if weightGrams != oldValue {
-                weightChangeCount += 1
-                if weightChangeCount <= 5 || weightChangeCount % 20 == 0 {
-                    NSLog("[Model] weightGrams = \(weightGrams) (change #\(weightChangeCount))")
-                }
+    /// Raw backing store — written by slider callback, NOT tracked by @Observable.
+    /// The display timer polls these every 50ms. BLE packets read from weightGrams/flowRate.
+    private var _weight: Double = 0
+    private var _flow: Double = 0
+
+    /// Read by display timer and BLE packet sender.
+    var weightGrams: Double { _weight }
+    var flowRate: Double { _flow }
+
+    /// Polled display copies — updated at 20fps for smooth UI.
+    private(set) var displayWeight: Double = 0
+    private(set) var displayFlow: Double = 0
+
+    /// Called by slider callback — bypasses @Observable coalescing.
+    func setWeight(_ w: Double) { _weight = w }
+    func setFlow(_ f: Double) { _flow = f }
+
+    // MARK: - Display Polling
+
+    private var pollingTimer: Timer?
+
+    func startDisplayPolling() {
+        stopDisplayPolling()
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.displayWeight = self._weight
+                self.displayFlow = self._flow
             }
         }
     }
-    var flowRate: Double = 0.0 {
-        didSet {
-            if flowRate != oldValue {
-                flowChangeCount += 1
-                if flowChangeCount <= 5 || flowChangeCount % 20 == 0 {
-                    NSLog("[Model] flowRate = \(flowRate) (change #\(flowChangeCount))")
-                }
-            }
-        }
+
+    func stopDisplayPolling() {
+        pollingTimer?.invalidate()
+        pollingTimer = nil
     }
-    private var weightChangeCount = 0
-    private var flowChangeCount = 0
+
     var batteryPercent: Double = 85
     var unit: WeightUnit = .grams
     var mode: BookooBLE.ScaleMode = .weight
@@ -340,7 +355,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private func handleCommand(_ cmd: BookooBLE.Command, data1: UInt8, data2: UInt8) {
         switch cmd {
         case .tare:
-            weightGrams = 0
+            setWeight(0)
             weightVersion &+= 1
             log("⬅️ Tare → weight = 0")
 
@@ -369,8 +384,8 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             log("⬅️ Reset Timer")
 
         case .tareAndStartTimer:
-            weightGrams = 0
-            flowRate = 0
+            setWeight(0)
+            setFlow(0)
             weightVersion &+= 1
             flowVersion &+= 1
             timerRunning = true
@@ -607,11 +622,6 @@ struct ContinuousSlider: NSViewRepresentable {
 struct ContentView: View {
     @Bindable var model: SimulatorModel
 
-    /// Polled copies for smooth display updates — @Observable can coalesce rapid changes.
-    @State private var displayWeight: Double = 0
-    @State private var displayFlow: Double = 0
-    @State private var displayTimer: Timer?
-
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
@@ -628,22 +638,11 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            displayWeight = model.weightGrams
-            displayFlow = model.flowRate
-            displayTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
-                Task { @MainActor in
-                    let w = model.weightGrams
-                    let f = model.flowRate
-                    if w != displayWeight || f != displayFlow {
-                        displayWeight = w
-                        displayFlow = f
-                    }
-                }
-            }
+            model.startDisplayPolling()
             NSLog("[Display] Polling timer started")
         }
         .onDisappear {
-            displayTimer?.invalidate()
+            model.stopDisplayPolling()
         }
     }
 
@@ -723,11 +722,11 @@ struct ContentView: View {
 
             HStack {
                 ContinuousSlider(value: model.weightGrams, range: -10...50, version: model.weightVersion) { newValue in
-                    model.weightGrams = newValue
+                    model.setWeight(newValue)
                 }
                 .onAppear { NSLog("[UI] Weight slider mounted") }
 
-                TextField("Weight", value: $model.weightGrams, format: .number.precision(.fractionLength(1)))
+                TextField("Weight", value: weightBinding(), format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.trailing)
@@ -737,7 +736,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(displayWeight, specifier: "%.1f") \(model.unit.symbol)")
+            Text("\(model.displayWeight, specifier: "%.1f") \(model.unit.symbol)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .monospacedDigit()
@@ -759,10 +758,10 @@ struct ContentView: View {
 
             HStack {
                 ContinuousSlider(value: model.flowRate, range: 0...15, version: model.flowVersion) { newValue in
-                    model.flowRate = newValue
+                    model.setFlow(newValue)
                 }
 
-                TextField("Flow", value: $model.flowRate, format: .number.precision(.fractionLength(1)))
+                TextField("Flow", value: flowBinding(), format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.trailing)
@@ -772,7 +771,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(displayFlow, specifier: "%.1f") g/s")
+            Text("\(model.displayFlow, specifier: "%.1f") g/s")
                 .font(.title3)
                 .monospacedDigit()
                 .foregroundStyle(model.flowRate > 0 ? .blue : .secondary)
@@ -887,7 +886,7 @@ struct ContentView: View {
 
             HStack(spacing: 8) {
                 Button {
-                    model.weightGrams = 0
+                    model.setWeight(0)
                     model.weightVersion &+= 1
                     model.log("🎯 Manual Tare")
                 } label: {
@@ -897,7 +896,7 @@ struct ContentView: View {
                 .buttonStyle(.bordered)
 
                 Button {
-                    model.flowRate = 0
+                    model.setFlow(0)
                     model.flowVersion &+= 1
                     model.log("🎯 Stop Flow")
                 } label: {
@@ -957,6 +956,16 @@ struct ContentView: View {
     }
 
     // MARK: - Helpers
+
+    @MainActor
+    private func weightBinding() -> Binding<Double> {
+        Binding(get: { model.weightGrams }, set: { model.setWeight($0) })
+    }
+
+    @MainActor
+    private func flowBinding() -> Binding<Double> {
+        Binding(get: { model.flowRate }, set: { model.setFlow($0) })
+    }
 
     private func formatTime(_ interval: TimeInterval) -> String {
         let totalSeconds = Int(interval)
