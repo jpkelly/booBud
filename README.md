@@ -1,4 +1,4 @@
-# booBud ☕
+# booBud ☕ Simple is good.
 
 The apps I found for the Bookoo scale were overcomplicated and awkward to use. I wanted something simple. So this is it — a straightforward iOS companion for your **Bookoo Mini Scale**: real-time weight, a brew timer, and tare controls over Bluetooth. Nothing more, nothing less.
 
@@ -11,11 +11,9 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 - **Stability indicator** — shows when weight settles
 - **Battery level** from the scale
 
-## Screens
+## Screenshots
 
-| Weight Display | Brew Timer | Device Picker |
-|---------------|------------|---------------|
-| Large weight + unit | Elapsed time + controls | Scan & connect to nearby scales |
+<img src="Screenshot.png" alt="booBud weight display" width="320" />
 
 ## Requirements
 
