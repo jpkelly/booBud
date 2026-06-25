@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1946656EDF645A4B703834EF /* ScaleReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83D9F50C398D89F4C7BCE34 /* ScaleReading.swift */; };
 		24365FA7044FFB91E3A2D2D1 /* WeightUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EB089E67E40BABE78932E8 /* WeightUnit.swift */; };
+		2DD65A17377858FDC0BA1F7B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B659FD0D9A95F9E0D05E9B /* SettingsView.swift */; };
 		4C6C5A766B30BA953B1C83DB /* ScaleBLEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F082C78B9E91613E0435C02E /* ScaleBLEController.swift */; };
 		51D97EAAC41FE7BC3BFB6C0D /* BookooProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9915A5D20DDAD92E3E342F2 /* BookooProtocol.swift */; };
 		5CEC65330AE581F6D561857D /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B08D834CA3839CABB9538C /* ScaleViewModel.swift */; };
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		3DC4074EB7539DDF5B533362 /* BeanBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeanBudApp.swift; sourceTree = "<group>"; };
 		4078853FB6BF07C5AF9C64C7 /* WeightReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightReading.swift; sourceTree = "<group>"; };
+		89B659FD0D9A95F9E0D05E9B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		90D075316CC2458F62145C19 /* DeviceDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryView.swift; sourceTree = "<group>"; };
 		91EB089E67E40BABE78932E8 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
 		98BE90F74773FCBD83D11A57 /* WeightDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightDisplayView.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				F627D0A157D963275FA7A2F1 /* ContentView.swift */,
 				A79FE3E029EA7B748BDE5DE7 /* ControlBarView.swift */,
 				90D075316CC2458F62145C19 /* DeviceDiscoveryView.swift */,
+				89B659FD0D9A95F9E0D05E9B /* SettingsView.swift */,
 				98BE90F74773FCBD83D11A57 /* WeightDisplayView.swift */,
 			);
 			path = Views;
@@ -232,6 +235,7 @@
 				4C6C5A766B30BA953B1C83DB /* ScaleBLEController.swift in Sources */,
 				1946656EDF645A4B703834EF /* ScaleReading.swift in Sources */,
 				5CEC65330AE581F6D561857D /* ScaleViewModel.swift in Sources */,
+				2DD65A17377858FDC0BA1F7B /* SettingsView.swift in Sources */,
 				769AC0797ECFC38DA66E53F5 /* WeightDisplayView.swift in Sources */,
 				C08D6ABB648FEFC4F1CA9814 /* WeightReading.swift in Sources */,
 				24365FA7044FFB91E3A2D2D1 /* WeightUnit.swift in Sources */,

@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var viewModel = ScaleViewModel()
     @State private var showDevicePicker = false
+    @State private var showSettings = false
 
     var body: some View {
         ZStack {
@@ -28,12 +29,15 @@ struct ContentView: View {
                 Spacer()
 
                 // Control buttons
-                ControlBarView(viewModel: viewModel, showDevicePicker: $showDevicePicker)
+                ControlBarView(viewModel: viewModel)
                     .padding(.bottom, 40)
             }
         }
         .sheet(isPresented: $showDevicePicker) {
             DeviceDiscoveryView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView(viewModel: viewModel)
         }
         .onAppear {
             viewModel.startScanning()
@@ -49,10 +53,18 @@ struct ContentView: View {
 
             Spacer()
 
-            // Battery indicator
-            if viewModel.connectionState == .connected("") || viewModel.batteryPercent > 0 {
-                batteryIndicator
+            // Settings gear
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(8)
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
             }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, 20)
         .padding(.top, 8)
@@ -84,16 +96,6 @@ struct ContentView: View {
         .buttonStyle(.plain)
     }
 
-    private var batteryIndicator: some View {
-        HStack(spacing: 2) {
-            Image(systemName: viewModel.batteryIcon)
-                .foregroundStyle(batteryColor)
-            Text("\(viewModel.batteryPercent)%")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-
     // MARK: - Helpers
 
     private var connectionColor: Color {
@@ -114,9 +116,5 @@ struct ContentView: View {
         case .connected(let n):  return n
         case .failed(let e):     return e
         }
-    }
-
-    private var batteryColor: Color {
-        viewModel.batteryPercent <= 10 ? .red : .secondary
     }
 }
