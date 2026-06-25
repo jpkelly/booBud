@@ -11,7 +11,7 @@ struct ScaleSimulatorApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(model: model)
-                .frame(minWidth: 420, idealWidth: 480, minHeight: 520, idealHeight: 600)
+                .frame(minWidth: 600, idealWidth: 700, minHeight: 500, idealHeight: 600)
         }
         .windowResizability(.contentMinSize)
     }
@@ -527,15 +527,19 @@ struct ContentView: View {
     @Bindable var model: SimulatorModel
 
     var body: some View {
-        HSplitView {
-            // Left panel: Controls
-            controlPanel
-                .frame(minWidth: 240, idealWidth: 260)
-                .padding()
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                // Left panel: Controls
+                controlPanel
+                    .frame(width: geometry.size.width * 0.55)
+                    .padding()
 
-            // Right panel: Log
-            logPanel
-                .frame(minWidth: 180)
+                Divider()
+
+                // Right panel: Log
+                logPanel
+                    .frame(width: geometry.size.width * 0.45)
+            }
         }
     }
 
