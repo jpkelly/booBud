@@ -1,6 +1,6 @@
 # booBud ☕
 
-An iOS app that turns your **Bookoo Mini Scale** into a dedicated coffee brewing companion — real-time weight display, brew timer, and tare controls over Bluetooth.
+The apps I found for the Bookoo scale were overcomplicated and awkward to use. I wanted something simple. So this is it — a straightforward iOS companion for your **Bookoo Mini Scale**: real-time weight, a brew timer, and tare controls over Bluetooth. Nothing more, nothing less.
 
 ## Features
 
