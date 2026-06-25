@@ -31,5 +31,6 @@ struct WeightDisplayView: View {
         }
         .padding(.horizontal)
         .padding(.top)
+        .frame(maxWidth: .infinity)
     }
 }
