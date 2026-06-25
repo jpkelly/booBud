@@ -66,10 +66,10 @@ final class ScaleBLEController: NSObject {
 
         isScanning = true
         pendingScan = false
-        logger.info("Scanning for Bookoo scales (all devices)")
+        logger.info("Scanning for Bookoo scales…")
 
         centralManager.scanForPeripherals(
-            withServices: nil,
+            withServices: [BookooProtocol.serviceUUID],
             options: [CBCentralManagerScanOptionAllowDuplicatesKey: false]
         )
     }
@@ -169,16 +169,14 @@ extension ScaleBLEController: CBCentralManagerDelegate {
     ) {
         let name = peripheral.name ?? ""
         let localName = advertisementData[CBAdvertisementDataLocalNameKey] as? String ?? ""
+        let displayName = localName.isEmpty ? name : localName
 
-        // Only show devices whose local name starts with "BOOKOO"
-        let matchesPrefix = localName.hasPrefix(BookooProtocol.advertisedNamePrefix)
-            || name.hasPrefix(BookooProtocol.advertisedNamePrefix)
-
-        logger.info("🔍 Discovered: name='\(name)' localName='\(localName)' RSSI=\(RSSI) match=\(matchesPrefix)")
-
+        // Only show devices whose name starts with "BOOKOO"
+        let matchesPrefix = displayName.hasPrefix(BookooProtocol.advertisedNamePrefix)
         guard matchesPrefix else { return }
         guard RSSI.compare(rssiThreshold) == .orderedDescending else { return }
 
+        logger.info("🔍 \(displayName) RSSI=\(RSSI)")
         delegate?.scaleController(self, didDiscoverScale: peripheral, rssi: RSSI)
     }
 
