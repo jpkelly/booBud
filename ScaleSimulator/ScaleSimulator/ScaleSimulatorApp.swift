@@ -641,6 +641,9 @@ struct ContinuousSlider: NSViewRepresentable {
 struct ContentView: View {
     @Bindable var model: SimulatorModel
 
+    @State private var sliderWeight: Double = 0
+    @State private var sliderFlow: Double = 0
+
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
@@ -655,13 +658,6 @@ struct ContentView: View {
                 logPanel
                     .frame(width: geometry.size.width * 0.45)
             }
-        }
-        .onAppear {
-            model.startDisplayPolling()
-            NSLog("[Display] Polling timer started")
-        }
-        .onDisappear {
-            model.stopDisplayPolling()
         }
     }
 
@@ -740,7 +736,8 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                ContinuousSlider(value: model.weightGrams, range: -10...50, version: model.weightVersion) { newValue in
+                ContinuousSlider(value: sliderWeight, range: -10...50, version: model.weightVersion) { newValue in
+                    sliderWeight = newValue
                     model.setWeight(newValue)
                 }
                 .onAppear { NSLog("[UI] Weight slider mounted") }
@@ -755,7 +752,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(model.displayWeight, specifier: "%.1f") \(model.unit.symbol)")
+            Text("\(sliderWeight, specifier: "%.1f") \(model.unit.symbol)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .monospacedDigit()
@@ -776,7 +773,8 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                ContinuousSlider(value: model.flowRate, range: 0...15, version: model.flowVersion) { newValue in
+                ContinuousSlider(value: sliderFlow, range: 0...15, version: model.flowVersion) { newValue in
+                    sliderFlow = newValue
                     model.setFlow(newValue)
                 }
 
@@ -790,7 +788,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(model.displayFlow, specifier: "%.1f") g/s")
+            Text("\(sliderFlow, specifier: "%.1f") g/s")
                 .font(.title3)
                 .monospacedDigit()
                 .foregroundStyle(model.flowRate > 0 ? .blue : .secondary)
@@ -905,6 +903,7 @@ struct ContentView: View {
 
             HStack(spacing: 8) {
                 Button {
+                    sliderWeight = 0
                     model.setWeight(0)
                     model.weightVersion &+= 1
                     model.log("🎯 Manual Tare")
@@ -915,6 +914,7 @@ struct ContentView: View {
                 .buttonStyle(.bordered)
 
                 Button {
+                    sliderFlow = 0
                     model.setFlow(0)
                     model.flowVersion &+= 1
                     model.log("🎯 Stop Flow")
