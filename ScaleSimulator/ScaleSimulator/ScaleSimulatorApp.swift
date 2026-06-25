@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import CoreBluetooth
 import os
 
@@ -583,6 +584,39 @@ struct LogEntry: Identifiable {
     let message: String
 }
 
+// MARK: - Continuous Slider
+
+/// NSSlider wrapper with `isContinuous = true`. Bypasses macOS SwiftUI Slider
+/// which only commits on release regardless of configuration.
+struct ContinuousSlider: NSViewRepresentable {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+
+    func makeNSView(context: Context) -> NSSlider {
+        let slider = NSSlider(value: value, minValue: range.lowerBound, maxValue: range.upperBound, target: context.coordinator, action: #selector(Coordinator.changed(_:)))
+        slider.isContinuous = true
+        slider.controlSize = .small
+        return slider
+    }
+
+    func updateNSView(_ nsView: NSSlider, context: Context) {
+        nsView.doubleValue = value
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(value: $value)
+    }
+
+    final class Coordinator: NSObject {
+        var value: Binding<Double>
+        init(value: Binding<Double>) { self.value = value }
+
+        @MainActor @objc func changed(_ sender: NSSlider) {
+            value.wrappedValue = sender.doubleValue
+        }
+    }
+}
+
 // MARK: - Content View
 
 struct ContentView: View {
@@ -680,8 +714,7 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                Slider(value: $model.targetWeight, in: -10...2000)
-                    .controlSize(.small)
+                ContinuousSlider(value: $model.targetWeight, range: -10...50)
 
                 TextField("Weight", value: $model.targetWeight, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
@@ -714,8 +747,7 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                Slider(value: $model.targetFlow, in: 0...15)
-                    .controlSize(.small)
+                ContinuousSlider(value: $model.targetFlow, range: 0...15)
 
                 TextField("Flow", value: $model.targetFlow, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
