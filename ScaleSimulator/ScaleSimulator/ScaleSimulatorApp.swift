@@ -187,6 +187,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     // UI controls
     var logMessages: [LogEntry] = []
     var notificationInterval: Double = 0.1  // 100ms default
+    var animationSpeed: Double = 300  // g/s for weight/flow glide animation
 
     // Presets
     var presetWeights: [Preset] = [
@@ -297,8 +298,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     }
 
     private func animationTick() {
-        let speed: Double = 300  // grams per second animation speed
-        let step = speed * 0.016
+        let step = animationSpeed * 0.016
 
         // Animate weight
         let wDiff = targetWeight - weightGrams
@@ -781,12 +781,24 @@ struct ContentView: View {
                 .pickerStyle(.segmented)
                 .controlSize(.small)
                 .onChange(of: model.notificationInterval) {
-                    // Restart data timer with new interval
                     if model.isConnected {
                         model.stopDataTimer()
-                        // Will restart on next subscription or we need a way
                     }
                 }
+            }
+
+            // Slide speed
+            VStack(alignment: .leading, spacing: 4) {
+                Label("Slide Speed", systemImage: "tortoise")
+                    .font(.subheadline)
+
+                Slider(value: $model.animationSpeed, in: 50...2000, step: 10)
+                    .controlSize(.small)
+
+                Text("\(Int(model.animationSpeed)) g/s")
+                    .font(.caption)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
             }
         }
     }
