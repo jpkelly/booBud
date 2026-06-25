@@ -582,6 +582,11 @@ struct ContinuousSlider: NSViewRepresentable {
 struct ContentView: View {
     @Bindable var model: SimulatorModel
 
+    /// Polled copies for smooth display updates — @Observable can coalesce rapid changes.
+    @State private var displayWeight: Double = 0
+    @State private var displayFlow: Double = 0
+    @State private var displayTimer: Timer?
+
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
@@ -596,6 +601,19 @@ struct ContentView: View {
                 logPanel
                     .frame(width: geometry.size.width * 0.45)
             }
+        }
+        .onAppear {
+            displayWeight = model.weightGrams
+            displayFlow = model.flowRate
+            displayTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+                Task { @MainActor in
+                    displayWeight = model.weightGrams
+                    displayFlow = model.flowRate
+                }
+            }
+        }
+        .onDisappear {
+            displayTimer?.invalidate()
         }
     }
 
@@ -688,7 +706,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(model.weightGrams, specifier: "%.1f") \(model.unit.symbol)")
+            Text("\(displayWeight, specifier: "%.1f") \(model.unit.symbol)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .monospacedDigit()
@@ -723,7 +741,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(model.flowRate, specifier: "%.1f") g/s")
+            Text("\(displayFlow, specifier: "%.1f") g/s")
                 .font(.title3)
                 .monospacedDigit()
                 .foregroundStyle(model.flowRate > 0 ? .blue : .secondary)
