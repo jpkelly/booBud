@@ -645,7 +645,15 @@ struct ContentView: View {
     @State private var sliderFlow: Double = 0
 
     var body: some View {
-        GeometryReader { geometry in
+        VStack(spacing: 0) {
+            // Debug: proves @State is updating the view
+            Text("DEBUG sliderWeight=\(sliderWeight, specifier: "%.2f")")
+                .font(.caption)
+                .foregroundStyle(.red)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+
+            GeometryReader { geometry in
             HStack(spacing: 0) {
                 // Left panel: Controls
                 controlPanel
