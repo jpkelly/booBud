@@ -22,9 +22,8 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription: "BeanBud needs Bluetooth to connect to your Bookoo coffee scale for real-time weight measurement."
-        INFOPLIST_KEY_UIBackgroundModes: "bluetooth-central"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: beanBud/Resources/Info.plist
     preBuildScripts:
       - name: "SwiftLint"
         script: |
