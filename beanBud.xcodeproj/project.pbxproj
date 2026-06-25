@@ -16,6 +16,7 @@
 		5CEC65330AE581F6D561857D /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B08D834CA3839CABB9538C /* ScaleViewModel.swift */; };
 		630DA2E72279A628CD96E507 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A34130118CE497DE6AA27FA /* icon.png */; };
 		63BBD336D19B05E1002B2C40 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627D0A157D963275FA7A2F1 /* ContentView.swift */; };
+		6577684349E1004615A55D1C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A6E0B77FE88372952E2D3513 /* LaunchScreen.storyboard */; };
 		73ECD3435CAA3A5F5F2D95B6 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79FE3E029EA7B748BDE5DE7 /* ControlBarView.swift */; };
 		769AC0797ECFC38DA66E53F5 /* WeightDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98BE90F74773FCBD83D11A57 /* WeightDisplayView.swift */; };
 		7929CC2D2A75997F6416BD35 /* BrewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCB93D5A3E29C53F03B5544 /* BrewTimerView.swift */; };
@@ -39,6 +40,7 @@
 		91EB089E67E40BABE78932E8 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
 		98BE90F74773FCBD83D11A57 /* WeightDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightDisplayView.swift; sourceTree = "<group>"; };
 		9BCB93D5A3E29C53F03B5544 /* BrewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerView.swift; sourceTree = "<group>"; };
+		A6E0B77FE88372952E2D3513 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A79FE3E029EA7B748BDE5DE7 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
 		B60B752DCF56C79FE94D40D3 /* BrewTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerState.swift; sourceTree = "<group>"; };
 		B67259E82368A423E012C3F6 /* WeightGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightGraphView.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 				FE3AB2682A461EB11A97A211 /* background.png */,
 				1A34130118CE497DE6AA27FA /* icon.png */,
 				DA5D99F0301C8E2D5CE39228 /* Info.plist */,
+				A6E0B77FE88372952E2D3513 /* LaunchScreen.storyboard */,
 				BB43073FB730A6F8F9C36C24 /* splash.png */,
 			);
 			path = Resources;
@@ -205,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				923968F26DB071F37BF637FF /* Assets.xcassets in Resources */,
+				6577684349E1004615A55D1C /* LaunchScreen.storyboard in Resources */,
 				7961687A205A97356FB9D1C0 /* background.png in Resources */,
 				630DA2E72279A628CD96E507 /* icon.png in Resources */,
 				278F94EF1537415513358C8F /* splash.png in Resources */,
