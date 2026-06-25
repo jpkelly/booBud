@@ -68,7 +68,7 @@ final class ScaleViewModel {
     // MARK: - Private
 
     private let bleController = ScaleBLEController()
-    private let logger = Logger(subsystem: "com.beanbud.viewmodel", category: "ScaleViewModel")
+    private let logger = Logger(subsystem: "com.boobud.viewmodel", category: "ScaleViewModel")
 
     /// Display-link style timer to advance the brew timer smoothly.
     private var displayTimer: Timer?
