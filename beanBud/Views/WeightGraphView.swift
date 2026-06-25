@@ -107,12 +107,20 @@ struct WeightGraphView: View {
     }
 
     private var effectiveMaxTime: Double {
-        max(data.last?.elapsed ?? 30, 30)
+        let raw = data.last?.elapsed ?? 0
+        // Snap to next 30s ceiling, minimum 30s
+        return max(ceil(raw / 30) * 30, 30)
     }
 
     private var effectiveMaxWeight: Double {
         let dataMax = data.map(\.weight).max() ?? 0
-        return max(dataMax, 1.0)
+        // Snap to next nice round number
+        let ceil10 = ceil(dataMax / 10) * 10
+        let ceil50 = ceil(dataMax / 50) * 50
+        let ceil100 = ceil(dataMax / 100) * 100
+        if dataMax < 20 { return max(ceil10, 10) }
+        if dataMax < 100 { return ceil50 }
+        return ceil100
     }
 
     private func formatTime(_ seconds: Double) -> String {
