@@ -169,8 +169,28 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var peripheralManager: CBPeripheralManager!
 
     // Simulated scale state
-    var weightGrams: Double = 0.0
-    var flowRate: Double = 0.0
+    var weightGrams: Double = 0.0 {
+        didSet {
+            if weightGrams != oldValue {
+                weightChangeCount += 1
+                if weightChangeCount <= 5 || weightChangeCount % 20 == 0 {
+                    NSLog("[Model] weightGrams = \(weightGrams) (change #\(weightChangeCount))")
+                }
+            }
+        }
+    }
+    var flowRate: Double = 0.0 {
+        didSet {
+            if flowRate != oldValue {
+                flowChangeCount += 1
+                if flowChangeCount <= 5 || flowChangeCount % 20 == 0 {
+                    NSLog("[Model] flowRate = \(flowRate) (change #\(flowChangeCount))")
+                }
+            }
+        }
+    }
+    private var weightChangeCount = 0
+    private var flowChangeCount = 0
     var batteryPercent: Double = 85
     var unit: WeightUnit = .grams
     var mode: BookooBLE.ScaleMode = .weight
@@ -566,12 +586,17 @@ struct ContinuousSlider: NSViewRepresentable {
         let onChanged: (Double) -> Void
         var lastVersion = 0
         var lastProgrammaticValue: Double = 0
+        var fireCount = 0
 
         init(onChanged: @escaping (Double) -> Void) {
             self.onChanged = onChanged
         }
 
         @MainActor @objc func changed(_ sender: NSSlider) {
+            fireCount += 1
+            if fireCount <= 5 || fireCount % 20 == 0 {
+                NSLog("[Slider] fire #\(fireCount) value=\(sender.doubleValue)")
+            }
             onChanged(sender.doubleValue)
         }
     }
@@ -607,10 +632,15 @@ struct ContentView: View {
             displayFlow = model.flowRate
             displayTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
                 Task { @MainActor in
-                    displayWeight = model.weightGrams
-                    displayFlow = model.flowRate
+                    let w = model.weightGrams
+                    let f = model.flowRate
+                    if w != displayWeight || f != displayFlow {
+                        displayWeight = w
+                        displayFlow = f
+                    }
                 }
             }
+            NSLog("[Display] Polling timer started")
         }
         .onDisappear {
             displayTimer?.invalidate()
@@ -695,6 +725,7 @@ struct ContentView: View {
                 ContinuousSlider(value: model.weightGrams, range: -10...50, version: model.weightVersion) { newValue in
                     model.weightGrams = newValue
                 }
+                .onAppear { NSLog("[UI] Weight slider mounted") }
 
                 TextField("Weight", value: $model.weightGrams, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
