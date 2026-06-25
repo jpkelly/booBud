@@ -29,6 +29,7 @@ struct WeightDisplayView: View {
                 }
             }
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.top)
     }
 }
