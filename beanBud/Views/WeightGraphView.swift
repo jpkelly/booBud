@@ -107,9 +107,7 @@ struct WeightGraphView: View {
     }
 
     private var effectiveMaxTime: Double {
-        let raw = data.last?.elapsed ?? 0
-        // Snap to next 30s ceiling, minimum 30s
-        return max(ceil(raw / 30) * 30, 30)
+        max(data.last?.elapsed ?? 30, 30)
     }
 
     private var effectiveMaxWeight: Double {
