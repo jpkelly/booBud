@@ -6,16 +6,20 @@ struct WeightDisplayView: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            (Text(viewModel.displayWeight)
-                .font(.system(size: 80, weight: .thin, design: .default))
-                .monospacedDigit()
-            + Text(" \(viewModel.weightUnitSymbol)")
-                .font(.system(size: 36, weight: .medium, design: .default))
-                .foregroundStyle(.secondary)
-                .baselineOffset(20)
-            )
-            .contentTransition(.numericText())
-            .frame(maxWidth: .infinity, alignment: .center)
+            HStack(spacing: 0) {
+                Spacer()
+                Text(viewModel.displayWeight)
+                    .font(.system(size: 80, weight: .thin, design: .default))
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                    .overlay(alignment: Alignment(horizontal: .trailing, vertical: .lastTextBaseline)) {
+                        Text(" \(viewModel.weightUnitSymbol)")
+                            .font(.system(size: 36, weight: .medium, design: .default))
+                            .foregroundStyle(.secondary)
+                            .alignmentGuide(.trailing) { d in d[.leading] }
+                    }
+                Spacer()
+            }
 
             // Stability indicator
             if let reading = viewModel.currentReading {
