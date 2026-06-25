@@ -5,7 +5,7 @@ struct BrewTimerView: View {
     @Bindable var viewModel: ScaleViewModel
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 48) {
             // Timer digits
             Text(viewModel.brewTimer.elapsedFormatted)
                 .font(.system(size: 80, weight: .thin, design: .monospaced))
