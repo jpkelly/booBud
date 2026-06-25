@@ -27,7 +27,7 @@ struct ContentView: View {
                     .padding(.top, 4)
 
                 Spacer()
-                    .frame(height: 20)
+                    .frame(height: 40)
 
                 WeightDisplayView(viewModel: viewModel)
 
