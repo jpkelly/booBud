@@ -8,7 +8,7 @@ struct BrewTimerView: View {
         VStack(spacing: 48) {
             // Timer digits
             Text(viewModel.brewTimer.elapsedFormatted)
-                .font(.system(size: 80, weight: .thin, design: .monospaced))
+                .font(.system(size: 80, weight: .thin, design: .default))
                 .monospacedDigit()
                 .foregroundStyle(viewModel.brewTimer.isRunning ? Color.orange : Color.secondary)
 

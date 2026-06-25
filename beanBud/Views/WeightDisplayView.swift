@@ -8,12 +8,12 @@ struct WeightDisplayView: View {
         VStack(spacing: 4) {
             HStack(alignment: .lastTextBaseline, spacing: 8) {
                 Text(viewModel.displayWeight)
-                    .font(.system(size: 80, weight: .thin, design: .rounded))
+                    .font(.system(size: 80, weight: .thin, design: .default))
                     .monospacedDigit()
                     .contentTransition(.numericText())
 
                 Text(viewModel.weightUnitSymbol)
-                    .font(.system(size: 36, weight: .medium, design: .rounded))
+                    .font(.system(size: 36, weight: .medium, design: .default))
                     .foregroundStyle(.secondary)
             }
 
