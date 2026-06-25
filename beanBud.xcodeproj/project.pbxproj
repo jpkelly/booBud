@@ -9,24 +9,29 @@
 /* Begin PBXBuildFile section */
 		1946656EDF645A4B703834EF /* ScaleReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83D9F50C398D89F4C7BCE34 /* ScaleReading.swift */; };
 		24365FA7044FFB91E3A2D2D1 /* WeightUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EB089E67E40BABE78932E8 /* WeightUnit.swift */; };
+		278F94EF1537415513358C8F /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = BB43073FB730A6F8F9C36C24 /* splash.png */; };
 		2DD65A17377858FDC0BA1F7B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B659FD0D9A95F9E0D05E9B /* SettingsView.swift */; };
 		4C6C5A766B30BA953B1C83DB /* ScaleBLEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F082C78B9E91613E0435C02E /* ScaleBLEController.swift */; };
 		51D97EAAC41FE7BC3BFB6C0D /* BookooProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9915A5D20DDAD92E3E342F2 /* BookooProtocol.swift */; };
 		5CEC65330AE581F6D561857D /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B08D834CA3839CABB9538C /* ScaleViewModel.swift */; };
+		630DA2E72279A628CD96E507 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A34130118CE497DE6AA27FA /* icon.png */; };
 		63BBD336D19B05E1002B2C40 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F627D0A157D963275FA7A2F1 /* ContentView.swift */; };
 		73ECD3435CAA3A5F5F2D95B6 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79FE3E029EA7B748BDE5DE7 /* ControlBarView.swift */; };
 		769AC0797ECFC38DA66E53F5 /* WeightDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98BE90F74773FCBD83D11A57 /* WeightDisplayView.swift */; };
 		7929CC2D2A75997F6416BD35 /* BrewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCB93D5A3E29C53F03B5544 /* BrewTimerView.swift */; };
 		8DB524DCA2523B7B75CE9F03 /* BrewTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B752DCF56C79FE94D40D3 /* BrewTimerState.swift */; };
 		923968F26DB071F37BF637FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEBD817AAF8332B3E2F7AC6B /* Assets.xcassets */; };
+		B26F08657ECE0655B3A444FD /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2D2DCF8E32917A5DF47B38 /* Color+Hex.swift */; };
 		C02F354D36AA05264438742B /* DeviceDiscoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D075316CC2458F62145C19 /* DeviceDiscoveryView.swift */; };
 		C08D6ABB648FEFC4F1CA9814 /* WeightReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4078853FB6BF07C5AF9C64C7 /* WeightReading.swift */; };
 		CF7402055855B649951EF068 /* BeanBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC4074EB7539DDF5B533362 /* BeanBudApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A34130118CE497DE6AA27FA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		3DC4074EB7539DDF5B533362 /* BeanBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeanBudApp.swift; sourceTree = "<group>"; };
 		4078853FB6BF07C5AF9C64C7 /* WeightReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightReading.swift; sourceTree = "<group>"; };
+		6B2D2DCF8E32917A5DF47B38 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		89B659FD0D9A95F9E0D05E9B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		90D075316CC2458F62145C19 /* DeviceDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryView.swift; sourceTree = "<group>"; };
 		91EB089E67E40BABE78932E8 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
@@ -34,8 +39,9 @@
 		9BCB93D5A3E29C53F03B5544 /* BrewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerView.swift; sourceTree = "<group>"; };
 		A79FE3E029EA7B748BDE5DE7 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
 		B60B752DCF56C79FE94D40D3 /* BrewTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerState.swift; sourceTree = "<group>"; };
+		BB43073FB730A6F8F9C36C24 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 		DA5D99F0301C8E2D5CE39228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E1CCAFD231608A3CC82AF005 /* beanBud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beanBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1CCAFD231608A3CC82AF005 /* beanBud.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = beanBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6B08D834CA3839CABB9538C /* ScaleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleViewModel.swift; sourceTree = "<group>"; };
 		E9915A5D20DDAD92E3E342F2 /* BookooProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookooProtocol.swift; sourceTree = "<group>"; };
 		EEBD817AAF8332B3E2F7AC6B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,7 +54,9 @@
 		30439BC879A3A328991FC36A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1A34130118CE497DE6AA27FA /* icon.png */,
 				DA5D99F0301C8E2D5CE39228 /* Info.plist */,
+				BB43073FB730A6F8F9C36C24 /* splash.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -57,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				3DC4074EB7539DDF5B533362 /* BeanBudApp.swift */,
+				6B2D2DCF8E32917A5DF47B38 /* Color+Hex.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -162,6 +171,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 5E2D806EF2C0C7A841317C0E /* Build configuration list for PBXProject "beanBud" */;
 			developmentRegion = en;
@@ -188,6 +199,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				923968F26DB071F37BF637FF /* Assets.xcassets in Resources */,
+				630DA2E72279A628CD96E507 /* icon.png in Resources */,
+				278F94EF1537415513358C8F /* splash.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +237,7 @@
 				51D97EAAC41FE7BC3BFB6C0D /* BookooProtocol.swift in Sources */,
 				8DB524DCA2523B7B75CE9F03 /* BrewTimerState.swift in Sources */,
 				7929CC2D2A75997F6416BD35 /* BrewTimerView.swift in Sources */,
+				B26F08657ECE0655B3A444FD /* Color+Hex.swift in Sources */,
 				63BBD336D19B05E1002B2C40 /* ContentView.swift in Sources */,
 				73ECD3435CAA3A5F5F2D95B6 /* ControlBarView.swift in Sources */,
 				C02F354D36AA05264438742B /* DeviceDiscoveryView.swift in Sources */,
@@ -309,7 +323,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = beanBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -329,7 +342,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = beanBud/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
