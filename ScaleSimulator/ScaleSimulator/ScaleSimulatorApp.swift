@@ -526,6 +526,10 @@ struct LogEntry: Identifiable {
 struct ContentView: View {
     @Bindable var model: SimulatorModel
 
+    // Local state for continuous slider updates (macOS Slider batches @Observable bindings)
+    @State private var sliderWeight: Double = 0
+    @State private var sliderFlow: Double = 0
+
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
@@ -553,11 +557,6 @@ struct ContentView: View {
 
                 // Primary action: advertise
                 actionsSection
-
-                Divider()
-
-                // Quick presets
-                presetsSection
 
                 Divider()
 
@@ -629,8 +628,14 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                Slider(value: $model.weightGrams, in: -10...2000)
+                Slider(value: $sliderWeight, in: -10...2000)
                     .controlSize(.small)
+                    .onChange(of: sliderWeight) { _, newValue in
+                        model.weightGrams = newValue
+                    }
+                    .onAppear {
+                        sliderWeight = model.weightGrams
+                    }
 
                 TextField("Weight", value: $model.weightGrams, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
@@ -663,8 +668,14 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                Slider(value: $model.flowRate, in: 0...15)
+                Slider(value: $sliderFlow, in: 0...15)
                     .controlSize(.small)
+                    .onChange(of: sliderFlow) { _, newValue in
+                        model.flowRate = newValue
+                    }
+                    .onAppear {
+                        sliderFlow = model.flowRate
+                    }
 
                 TextField("Flow", value: $model.flowRate, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
@@ -772,52 +783,6 @@ struct ContentView: View {
             }
             .pickerStyle(.segmented)
         }
-    }
-
-    // MARK: Presets
-
-    private var presetsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Quick Presets", systemImage: "square.and.pencil")
-                .font(.headline)
-
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 6) {
-                ForEach(model.presetWeights) { preset in
-                    Button {
-                        model.weightGrams = preset.weight
-                        model.flowRate = preset.weight > 0 ? 2.0 : 0
-                        model.log("🎯 Preset: \(preset.name) → \(String(format: "%.0f", preset.weight))g")
-                    } label: {
-                        Text(preset.name)
-                            .font(.caption)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                }
-            }
-
-            // Brew simulation presets
-            HStack(spacing: 6) {
-                brewButton("🌊 Pour", weight: 350, flow: 3.0)
-                brewButton("🌸 Bloom", weight: 60, flow: 1.5)
-                brewButton("⏳ Drain", weight: -200, flow: -1.0)
-                brewButton("✅ Done", weight: 0, flow: 0)
-            }
-        }
-    }
-
-    private func brewButton(_ label: String, weight: Double, flow: Double) -> some View {
-        Button {
-            model.weightGrams = max(0, model.weightGrams + weight)
-            model.flowRate = flow
-            model.log("🎯 \(label)")
-        } label: {
-            Text(label)
-                .font(.caption)
-        }
-        .buttonStyle(.bordered)
-        .controlSize(.small)
     }
 
     // MARK: Actions

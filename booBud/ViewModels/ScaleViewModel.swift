@@ -249,13 +249,14 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
     nonisolated func scaleController(
         _ controller: ScaleBLEController,
         didDiscoverScale peripheral: CBPeripheral,
+        localName: String,
         rssi: NSNumber
     ) {
         Task { @MainActor in
             let scale = DiscoveredScale(
                 id: peripheral.identifier,
                 peripheral: peripheral,
-                name: peripheral.name ?? "Bookoo Scale",
+                name: localName,
                 rssi: rssi.intValue
             )
             // Upsert — avoid duplicates

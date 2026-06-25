@@ -6,7 +6,7 @@ import os
 protocol ScaleBLEControllerDelegate: AnyObject {
     func scaleController(_ controller: ScaleBLEController, didReceiveReading reading: BookooProtocol.WeightData)
     func scaleController(_ controller: ScaleBLEController, didChangeConnectionState connected: Bool)
-    func scaleController(_ controller: ScaleBLEController, didDiscoverScale peripheral: CBPeripheral, rssi: NSNumber)
+    func scaleController(_ controller: ScaleBLEController, didDiscoverScale peripheral: CBPeripheral, localName: String, rssi: NSNumber)
     func scaleController(_ controller: ScaleBLEController, didUpdateBattery percent: Int)
 }
 
@@ -177,7 +177,7 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         guard RSSI.compare(rssiThreshold) == .orderedDescending else { return }
 
         logger.info("🔍 \(displayName) RSSI=\(RSSI)")
-        delegate?.scaleController(self, didDiscoverScale: peripheral, rssi: RSSI)
+        delegate?.scaleController(self, didDiscoverScale: peripheral, localName: displayName, rssi: RSSI)
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
