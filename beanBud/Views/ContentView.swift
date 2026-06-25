@@ -35,8 +35,9 @@ struct ContentView: View {
 
                 WeightGraphView(data: viewModel.weightHistory, displayUnit: viewModel.displayUnit)
                     .frame(height: 200)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
+                    .padding(.leading, 4)
+                    .padding(.trailing, 16)
+                    .padding(.top, 20)
 
                 Spacer()
             }
