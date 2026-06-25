@@ -1,0 +1,32 @@
+name: ScaleSimulator
+options:
+  bundleIdPrefix: com.boobud
+  deploymentTarget:
+    macOS: "14.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+
+targets:
+  ScaleSimulator:
+    type: application
+    platform: macOS
+    sources:
+      - path: ScaleSimulator
+        type: group
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.boobud.scale-simulator
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: ScaleSimulator/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ScaleSimulator/ScaleSimulator.entitlements
+        CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION: YES
+    entitlements:
+      path: ScaleSimulator/ScaleSimulator.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.bluetooth-peripheral: true
