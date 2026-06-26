@@ -255,9 +255,6 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private var dataTimer: Timer?
     private var displayTimer: Timer?
     private var timerStartDate: Date?
-    private var sendCount = 0
-    private var failCount = 0
-
     // Logger
     private let logger = Logger(subsystem: "com.boobud.simulator", category: "Simulator")
 
@@ -338,7 +335,6 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
                 self?.sendWeightNotification()
             }
         }
-        NSLog("[Timer] BLE data timer started, interval=\(notificationInterval)")
     }
 
     func stopDataTimer() {
@@ -349,7 +345,6 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private func sendWeightNotification() {
         guard isConnected, connectedCentral != nil else { return }
 
-        sendCount += 1
         let ms = UInt32(timerElapsed * 1000)
         let packet = BookooBLE.buildWeightPacket(
             milliseconds: ms,
@@ -359,13 +354,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             unit: unit == .grams ? 0x01 : 0x02
         )
 
-        let ok = peripheralManager.updateValue(packet, for: weightCharacteristic, onSubscribedCentrals: nil)
-        if !ok {
-            failCount += 1
-            if failCount <= 5 { NSLog("[BLE] queue full (fail #\(failCount))") }
-        } else if sendCount <= 3 || sendCount % 100 == 0 {
-            NSLog("[BLE] sent #\(sendCount) w=\(weightGrams)")
-        }
+        peripheralManager.updateValue(packet, for: weightCharacteristic, onSubscribedCentrals: nil)
     }
 
     // MARK: - Command Handling
@@ -616,17 +605,12 @@ struct ContinuousSlider: NSViewRepresentable {
         let onChanged: (Double) -> Void
         var lastVersion = 0
         var lastProgrammaticValue: Double = 0
-        var fireCount = 0
 
         init(onChanged: @escaping (Double) -> Void) {
             self.onChanged = onChanged
         }
 
         @MainActor @objc func changed(_ sender: NSSlider) {
-            fireCount += 1
-            if fireCount <= 5 || fireCount % 20 == 0 {
-                NSLog("[Slider] fire #\(fireCount) value=\(sender.doubleValue)")
-            }
             onChanged(sender.doubleValue)
         }
     }
@@ -736,7 +720,7 @@ struct ContentView: View {
                     sliderWeight = newValue
                     model.setWeight(newValue)
                 }
-                .onAppear { NSLog("[UI] Weight slider mounted") }
+
 
                 TextField("Weight", value: weightBinding(), format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
