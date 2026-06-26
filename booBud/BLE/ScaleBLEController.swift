@@ -38,6 +38,15 @@ final class ScaleBLEController: NSObject {
     /// after a good LocalName is received from a scan-response packet.
     private var discoveredNames: [UUID: String] = [:]
 
+    /// Last connected peripheral UUID — used for auto-reconnect on disconnect.
+    private var lastConnectedUUID: UUID?
+
+    /// Prevent reconnect storms — only auto-reconnect once per unexpected disconnect.
+    private var autoReconnectAttempted = false
+
+    /// Distinguish user-initiated disconnect from unexpected drops.
+    private var userInitiatedDisconnect = false
+
     // MARK: - Init
 
     override init() {
@@ -71,6 +80,7 @@ final class ScaleBLEController: NSObject {
 
         isScanning = true
         pendingScan = false
+        autoReconnectAttempted = false  // fresh scan resets reconnect gate
         logger.info("Scanning for Bookoo scales…")
 
         // Allow duplicates so scan-response packets (carrying the local name)
@@ -122,6 +132,7 @@ final class ScaleBLEController: NSObject {
     /// Disconnect from the current peripheral.
     func disconnect() {
         guard let peripheral = connectedPeripheral else { return }
+        userInitiatedDisconnect = true
         logger.info("Disconnecting from \(peripheral.name ?? "unknown")")
         centralManager.cancelPeripheralConnection(peripheral)
     }
@@ -237,6 +248,8 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         logger.info("Connected to \(peripheral.name ?? "unknown")")
         isConnected = true
         connectedPeripheral = peripheral
+        lastConnectedUUID = peripheral.identifier
+        autoReconnectAttempted = false
         peripheral.delegate = self
         peripheral.discoverServices([BookooProtocol.serviceUUID])
         delegate?.scaleController(self, didChangeConnectionState: true)
@@ -250,11 +263,24 @@ extension ScaleBLEController: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        let wasUserInitiated = userInitiatedDisconnect
+        userInitiatedDisconnect = false
+
         logger.info("Disconnected: \(error?.localizedDescription ?? "clean disconnect")")
         isConnected = false
         commandCharacteristic = nil
         connectedPeripheral = nil
         delegate?.scaleController(self, didChangeConnectionState: false)
+
+        // Auto-reconnect only for unexpected disconnects (sim powered off, out of range, etc.)
+        if !wasUserInitiated, !autoReconnectAttempted, let uuid = lastConnectedUUID {
+            autoReconnectAttempted = true
+            logger.info("🔄 Auto-reconnect attempt for \(uuid.uuidString.prefix(8))…")
+            // Brief delay to let the peripheral stabilize before reconnecting
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.reconnectToLastDevice(uuid: uuid)
+            }
+        }
     }
 }
 
@@ -361,6 +387,18 @@ extension ScaleBLEController: CBPeripheralDelegate {
             logger.error("Notification state update failed: \(error.localizedDescription)")
         } else {
             logger.info("Notifications \(characteristic.isNotifying ? "enabled" : "disabled") for \(characteristic.uuid.uuidString)")
+        }
+    }
+
+    /// Called when the peripheral's services are modified (e.g., sim calls removeAllServices).
+    /// If our Bookoo service disappears, treat it as a disconnect — much faster than
+    /// waiting for the BLE supervision timeout (~20s).
+    func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        let bookooInvalidated = invalidatedServices.contains { $0.uuid == BookooProtocol.serviceUUID }
+        logger.info("Services modified — Bookoo invalidated: \(bookooInvalidated)")
+        if bookooInvalidated {
+            // Force-disconnect; didDisconnectPeripheral will handle cleanup + auto-reconnect
+            centralManager.cancelPeripheralConnection(peripheral)
         }
     }
 }
