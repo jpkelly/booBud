@@ -359,11 +359,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         ])
 
         isAdvertising = true
-        if let hostName = Host.current().localizedName {
-            log("📡 Advertising as \"\(hostName)\" (macOS uses computer name)")
-        } else {
-            log("📡 Started advertising")
-        }
+        log("📡 Started advertising as \"\(BookooBLE.advertisedName)\"")
     }
 
     private func stopAdvertising() {
