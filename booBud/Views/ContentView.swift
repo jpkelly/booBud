@@ -80,11 +80,12 @@ struct ContentView: View {
                 showSettings = true
             } label: {
                 Image(systemName: "gearshape.fill")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.secondary)
                     .padding(8)
             }
             .buttonStyle(.plain)
+            .offset(x: 4)
         }
     }
 
