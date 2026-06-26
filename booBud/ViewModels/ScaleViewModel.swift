@@ -248,9 +248,12 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
                !self.brewTimer.isRunning,
                newReading.grams > 0.1,
                self.lastAutoStartWeight < 0.1 {
+                logger.info("⏱️ Auto-detect triggered: grams=\(newReading.grams) last=\(self.lastAutoStartWeight) stable=\(reading.isStable)")
                 self.brewTimer.reset()
                 self.brewTimer.startOrResume()
                 self.startDisplayTimer()
+            } else if self.autoDetectPour, !self.brewTimer.isRunning {
+                logger.debug("⏱️ No trigger: grams=\(newReading.grams) last=\(self.lastAutoStartWeight) stable=\(reading.isStable) running=\(self.brewTimer.isRunning)")
             }
             self.lastAutoStartWeight = newReading.grams
         }
