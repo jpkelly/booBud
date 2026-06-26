@@ -97,7 +97,7 @@ struct ContentView: View {
                 Text(connectionLabel)
                     .font(.caption)
                     .fontWeight(.medium)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.secondary)
 
                 Image(systemName: "chevron.down")
                     .font(.caption2)
