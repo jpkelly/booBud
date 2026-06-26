@@ -32,6 +32,11 @@ final class ScaleViewModel {
         didSet { UserDefaults.standard.set(autoStopSeconds, forKey: "autoStopSeconds") }
     }
 
+    /// Auto-detect pour start and auto-start brew timer.
+    var autoDetectPour: Bool = UserDefaults.standard.bool(forKey: "autoDetectPour") {
+        didSet { UserDefaults.standard.set(autoDetectPour, forKey: "autoDetectPour") }
+    }
+
     /// Scale operating mode — persisted to UserDefaults, sent to scale on change.
     var scaleMode: BookooProtocol.ScaleMode = {
         let raw = UserDefaults.standard.integer(forKey: "scaleMode")
@@ -230,9 +235,9 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
             )
             self.currentReading = newReading
 
-            // Auto-start timer when a pour is detected:
-            // weight increasing from near-zero with measurable flow
-            if !self.brewTimer.isRunning,
+            // Auto-start timer when a pour is detected (if enabled)
+            if self.autoDetectPour,
+               !self.brewTimer.isRunning,
                !reading.isStable,
                newReading.grams > 0.5,
                self.lastAutoStartWeight < 0.5 {

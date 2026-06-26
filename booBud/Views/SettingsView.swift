@@ -47,6 +47,10 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Pour Detection") {
+                    Toggle("Auto-detect pour", isOn: $viewModel.autoDetectPour)
+                }
+
                 Section {
                     HStack {
                         Text("Battery")
