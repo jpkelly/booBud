@@ -70,10 +70,6 @@ struct ContentView: View {
                         .font(.caption)
                 }
                 .foregroundStyle(viewModel.batteryPercent <= 10 ? .red : viewModel.batteryPercent <= 20 ? .yellow : .secondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(.ultraThinMaterial)
-                .clipShape(Capsule())
             }
 
             Button {
