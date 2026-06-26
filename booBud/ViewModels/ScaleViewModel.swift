@@ -267,6 +267,7 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
             } else {
                 self.connectionState = .disconnected
                 self.currentReading = nil
+                self.batteryPercent = 0
                 self.brewTimer.reset()
             }
         }
