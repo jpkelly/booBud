@@ -250,6 +250,9 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private var displayTimer: Timer?
     private var timerStartDate: Date?
 
+    /// True when updateValue failed and we have a fresher value to retry.
+    private var needsFlush = false
+
     // Logger
     private let logger = Logger(subsystem: "com.boobud.simulator", category: "Simulator")
 
@@ -349,12 +352,16 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             unit: unit == .grams ? 0x01 : 0x02
         )
 
-        peripheralManager.updateValue(
-            packet,
-            for: weightCharacteristic,
-            onSubscribedCentrals: nil
-        )
-        // Silently drop if queue full — BLE stack self-throttles
+        if peripheralManager.updateValue(packet, for: weightCharacteristic, onSubscribedCentrals: nil) {
+            needsFlush = false
+        } else {
+            needsFlush = true
+        }
+    }
+
+    private func flushIfNeeded() {
+        guard needsFlush else { return }
+        sendWeightNotification()
     }
 
     // MARK: - Command Handling
@@ -534,7 +541,11 @@ extension SimulatorModel: CBPeripheralManagerDelegate {
         }
     }
 
-    nonisolated func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {}
+    nonisolated func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
+        Task { @MainActor in
+            flushIfNeeded()
+        }
+    }
 }
 
 // MARK: - Types
