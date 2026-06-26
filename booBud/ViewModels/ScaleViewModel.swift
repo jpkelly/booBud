@@ -86,7 +86,6 @@ final class ScaleViewModel {
     private let bleController = ScaleBLEController()
     private let logger = Logger(subsystem: "com.boobud.viewmodel", category: "ScaleViewModel")
     private var lastAutoStartWeight: Double = 0
-    private var connectedScaleName: String?
 
     /// Display-link style timer to advance the brew timer smoothly.
     private var displayTimer: Timer?
@@ -130,17 +129,6 @@ final class ScaleViewModel {
             return
         }
         discoveredScales.removeAll()
-
-        // Try to reconnect to last device immediately
-        if let uuidString = UserDefaults.standard.string(forKey: "lastPeripheralUUID"),
-           let uuid = UUID(uuidString: uuidString) {
-            connectedScaleName = UserDefaults.standard.string(forKey: "lastPeripheralName")
-            let name = connectedScaleName ?? "Scale"
-            connectionState = .connecting(name)
-            bleController.reconnectToLastDevice(uuid: uuid, name: name)
-            return
-        }
-
         connectionState = .scanning
         bleController.startScanning()
     }
@@ -150,15 +138,11 @@ final class ScaleViewModel {
     }
 
     func connect(to scale: DiscoveredScale) {
-        connectedScaleName = scale.name
         connectionState = .connecting(scale.name)
-        UserDefaults.standard.set(scale.peripheral.identifier.uuidString, forKey: "lastPeripheralUUID")
-        UserDefaults.standard.set(scale.name, forKey: "lastPeripheralName")
         bleController.connect(to: scale.peripheral)
     }
 
     func disconnect() {
-        connectedScaleName = nil
         bleController.disconnect()
         connectionState = .disconnected
         currentReading = nil
@@ -265,7 +249,7 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
     ) {
         Task { @MainActor in
             if connected {
-                let name = self.connectedScaleName ?? self.bleController.connectedPeripheral?.name ?? "Scale"
+                let name = self.bleController.connectedPeripheral?.name ?? "Scale"
                 self.connectionState = .connected(name)
             } else {
                 self.connectionState = .disconnected

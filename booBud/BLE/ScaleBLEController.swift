@@ -89,36 +89,6 @@ final class ScaleBLEController: NSObject {
         centralManager.connect(peripheral, options: nil)
     }
 
-    /// Try to reconnect to a previously saved peripheral by UUID.
-    func reconnectToLastDevice(uuid: UUID, name: String) {
-        guard !isReconnecting else { return }
-        guard ScaleBLEController.isBluetoothAvailable,
-              centralManager.state == .poweredOn else {
-            pendingReconnectUUID = uuid
-            pendingReconnectName = name
-            return
-        }
-
-        isReconnecting = true
-        let peripherals = centralManager.retrievePeripherals(withIdentifiers: [uuid])
-        if let peripheral = peripherals.first {
-            logger.info("Reconnecting to last device: \(name)")
-            connectedPeripheral = peripheral
-            peripheral.delegate = self
-            centralManager.connect(peripheral, options: nil)
-        } else {
-            logger.info("Last device not in cache, falling back to scan")
-            pendingReconnectUUID = nil
-            pendingReconnectName = nil
-            isReconnecting = false
-            startScanning()
-        }
-    }
-
-    private var pendingReconnectUUID: UUID?
-    private var pendingReconnectName: String?
-    private var isReconnecting = false
-
     /// Disconnect from the current peripheral.
     func disconnect() {
         guard let peripheral = connectedPeripheral else { return }
@@ -178,12 +148,6 @@ extension ScaleBLEController: CBCentralManagerDelegate {
                 logger.info("Bluetooth now powered on — starting deferred scan")
                 startScanning()
             }
-            // Try pending reconnect
-            if let uuid = pendingReconnectUUID, let name = pendingReconnectName {
-                pendingReconnectUUID = nil
-                pendingReconnectName = nil
-                reconnectToLastDevice(uuid: uuid, name: name)
-            }
             // Auto-reconnect if we were previously connected
             if connectedPeripheral != nil {
                 central.connect(connectedPeripheral!, options: nil)
@@ -219,7 +183,6 @@ extension ScaleBLEController: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         logger.info("Connected to \(peripheral.name ?? "unknown")")
         isConnected = true
-        isReconnecting = false
         connectedPeripheral = peripheral
         peripheral.delegate = self
         peripheral.discoverServices([BookooProtocol.serviceUUID])
