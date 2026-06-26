@@ -23,6 +23,7 @@ enum BookooBLE {
     nonisolated(unsafe) static let serviceUUID = CBUUID(string: "FFE0")
     nonisolated(unsafe) static let commandCharUUID = CBUUID(string: "FF12")
     nonisolated(unsafe) static let weightCharUUID = CBUUID(string: "FF11")
+    nonisolated(unsafe) static let nameCharUUID = CBUUID(string: "FF1E")
     static let fullServiceUUID = "0000FFE0-0000-1000-8000-00805F9B34FB"
     static let advertisedName = "BOOKOO Sim"  // macOS uses hostname; this is for reference
 
@@ -294,6 +295,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private var service: CBMutableService!
     private var weightCharacteristic: CBMutableCharacteristic!
     private var commandCharacteristic: CBMutableCharacteristic!
+    private var nameCharacteristic: CBMutableCharacteristic!
 
     // Timer
     private var dataTimer: Timer?
@@ -329,8 +331,17 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             permissions: [.writeable]
         )
 
+        // Device Name characteristic (read) — authoritative name for the app
+        let nameData = BookooBLE.advertisedName.data(using: .utf8)!
+        nameCharacteristic = CBMutableCharacteristic(
+            type: BookooBLE.nameCharUUID,
+            properties: [.read],
+            value: nameData,
+            permissions: [.readable]
+        )
+
         service = CBMutableService(type: fullServiceUUID, primary: true)
-        service.characteristics = [weightCharacteristic, commandCharacteristic]
+        service.characteristics = [weightCharacteristic, commandCharacteristic, nameCharacteristic]
 
         peripheralManager.add(service)
         log("Service registered: \(BookooBLE.fullServiceUUID)")
@@ -552,6 +563,18 @@ extension SimulatorModel: CBPeripheralManagerDelegate {
                 log("⚠️ Invalid command packet: \(data.map { String(format: "%02X", $0) }.joined(separator: " "))")
                 peripheral.respond(to: request, withResult: .invalidAttributeValueLength)
             }
+        }
+    }
+
+    nonisolated func peripheralManager(
+        _ peripheral: CBPeripheralManager,
+        didReceiveRead request: CBATTRequest
+    ) {
+        if request.characteristic.uuid == BookooBLE.nameCharUUID {
+            request.value = BookooBLE.advertisedName.data(using: .utf8)!
+            peripheral.respond(to: request, withResult: .success)
+        } else {
+            peripheral.respond(to: request, withResult: .requestNotSupported)
         }
     }
 

@@ -8,6 +8,7 @@ protocol ScaleBLEControllerDelegate: AnyObject {
     func scaleController(_ controller: ScaleBLEController, didChangeConnectionState connected: Bool)
     func scaleController(_ controller: ScaleBLEController, didDiscoverScale peripheral: CBPeripheral, localName: String, rssi: NSNumber)
     func scaleController(_ controller: ScaleBLEController, didUpdateBattery percent: Int)
+    func scaleController(_ controller: ScaleBLEController, didReceiveScaleName name: String)
 }
 
 /// Manages all BLE communication with the Bookoo Mini Scale.
@@ -275,7 +276,7 @@ extension ScaleBLEController: CBPeripheralDelegate {
         for service in services where service.uuid == BookooProtocol.serviceUUID {
             logger.info("Found Bookoo service, discovering characteristics…")
             peripheral.discoverCharacteristics(
-                [BookooProtocol.weightCharUUID, BookooProtocol.commandCharUUID],
+                [BookooProtocol.weightCharUUID, BookooProtocol.commandCharUUID, BookooProtocol.nameCharUUID],
                 for: service
             )
         }
@@ -299,6 +300,10 @@ extension ScaleBLEController: CBPeripheralDelegate {
                 logger.info("Found command characteristic")
                 commandCharacteristic = characteristic
 
+            case BookooProtocol.nameCharUUID:
+                logger.info("Found name characteristic — reading authoritative name")
+                peripheral.readValue(for: characteristic)
+
             default:
                 logger.debug("Unknown characteristic: \(characteristic.uuid.uuidString)")
             }
@@ -315,14 +320,25 @@ extension ScaleBLEController: CBPeripheralDelegate {
             return
         }
 
-        guard characteristic.uuid == BookooProtocol.weightCharUUID,
-              let data = characteristic.value else { return }
+        guard let data = characteristic.value else { return }
 
-        if let weightData = BookooProtocol.WeightData(data: data) {
-            delegate?.scaleController(self, didReceiveReading: weightData)
-            delegate?.scaleController(self, didUpdateBattery: weightData.batteryPercent)
-        } else {
-            logger.warning("Failed to parse weight data packet: \(data.map { String(format: "%02X", $0) }.joined(separator: " "))")
+        switch characteristic.uuid {
+        case BookooProtocol.weightCharUUID:
+            if let weightData = BookooProtocol.WeightData(data: data) {
+                delegate?.scaleController(self, didReceiveReading: weightData)
+                delegate?.scaleController(self, didUpdateBattery: weightData.batteryPercent)
+            } else {
+                logger.warning("Failed to parse weight data packet: \(data.map { String(format: "%02X", $0) }.joined(separator: " "))")
+            }
+
+        case BookooProtocol.nameCharUUID:
+            if let name = String(data: data, encoding: .utf8), !name.isEmpty {
+                logger.info("📛 Authoritative scale name: '\(name)'")
+                delegate?.scaleController(self, didReceiveScaleName: name)
+            }
+
+        default:
+            break
         }
     }
 

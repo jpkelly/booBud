@@ -16,6 +16,9 @@ enum BookooProtocol {
     /// Weight data characteristic — receives weight/time/battery notifications
     static let weightCharUUID = CBUUID(string: "FF11")
 
+    /// Device Name characteristic — read to get authoritative display name
+    static let nameCharUUID = CBUUID(string: "FF1E")
+
     /// Scale advertises with this local name prefix
     static let advertisedNamePrefix = "BOOKOO"
 

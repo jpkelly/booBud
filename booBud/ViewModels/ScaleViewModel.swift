@@ -301,4 +301,23 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
             self.batteryPercent = percent
         }
     }
+
+    nonisolated func scaleController(
+        _ controller: ScaleBLEController,
+        didReceiveScaleName name: String
+    ) {
+        Task { @MainActor in
+            self.connectedScaleName = name
+            // Update connection state header if already connected
+            if case .connected = self.connectionState {
+                self.connectionState = .connected(name)
+            }
+            // Also update connecting state if still in that phase
+            if case .connecting = self.connectionState {
+                self.connectionState = .connecting(name)
+            }
+            // Persist the name for auto-reconnect
+            UserDefaults.standard.set(name, forKey: "lastPeripheralName")
+        }
+    }
 }
