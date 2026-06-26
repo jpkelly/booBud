@@ -86,6 +86,7 @@ final class ScaleViewModel {
     private let bleController = ScaleBLEController()
     private let logger = Logger(subsystem: "com.boobud.viewmodel", category: "ScaleViewModel")
     private var lastAutoStartWeight: Double = 0
+    private var connectedScaleName: String?
 
     /// Display-link style timer to advance the brew timer smoothly.
     private var displayTimer: Timer?
@@ -138,11 +139,13 @@ final class ScaleViewModel {
     }
 
     func connect(to scale: DiscoveredScale) {
+        connectedScaleName = scale.name
         connectionState = .connecting(scale.name)
         bleController.connect(to: scale.peripheral)
     }
 
     func disconnect() {
+        connectedScaleName = nil
         bleController.disconnect()
         connectionState = .disconnected
         currentReading = nil
@@ -249,7 +252,7 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
     ) {
         Task { @MainActor in
             if connected {
-                let name = self.bleController.connectedPeripheral?.name ?? "Scale"
+                let name = self.connectedScaleName ?? self.bleController.connectedPeripheral?.name ?? "Scale"
                 self.connectionState = .connected(name)
             } else {
                 self.connectionState = .disconnected
