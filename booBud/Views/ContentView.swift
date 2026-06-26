@@ -45,16 +45,15 @@ struct ContentView: View {
 
             // Splash overlay — matches launch screen, dismisses on connect or after 1s
             if splashOpacity > 0 {
-                Color.black
-                    .ignoresSafeArea()
-                    .overlay {
-                        Image("SplashImage")
-                            .resizable()
-                            .scaledToFit()
-                            .ignoresSafeArea()
-                    }
-                    .opacity(splashOpacity)
-                    .allowsHitTesting(splashOpacity > 0.01)
+                ZStack {
+                    Color.black
+                    Image("SplashImage")
+                        .resizable()
+                        .scaledToFit()
+                }
+                .ignoresSafeArea()
+                .opacity(splashOpacity)
+                .allowsHitTesting(splashOpacity > 0.01)
             }
         }
         .sheet(isPresented: $showDevicePicker) {
