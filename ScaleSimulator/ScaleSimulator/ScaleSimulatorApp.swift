@@ -350,11 +350,12 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             return
         }
 
+        // Setup GATT services (needed for characteristics to work)
         setupService()
 
+        // Start advertising — local name only, service UUID handled by GATT
         peripheralManager.startAdvertising([
             CBAdvertisementDataLocalNameKey: BookooBLE.advertisedName,
-            CBAdvertisementDataServiceUUIDsKey: [BookooBLE.serviceUUID],
         ])
 
         isAdvertising = true
