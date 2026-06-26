@@ -98,6 +98,10 @@ struct ContentView: View {
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
+
+                Image(systemName: "chevron.down")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
         }
         .buttonStyle(.plain)
