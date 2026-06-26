@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 import CoreBluetooth
 import os
 
@@ -169,60 +168,12 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var peripheralManager: CBPeripheralManager!
 
     // Simulated scale state
-    /// Raw backing store — written by slider callback, NOT tracked by @Observable.
-    /// The display timer polls these every 50ms. BLE packets read from weightGrams/flowRate.
-    private var _weight: Double = 0
-    private var _flow: Double = 0
-
-    /// Read by display timer and BLE packet sender.
-    var weightGrams: Double { _weight }
-    var flowRate: Double { _flow }
-
-    /// Polled display copies — updated at 20fps for smooth UI.
-    var displayWeight: Double = 0
-    var displayFlow: Double = 0
-
-    /// Called by slider callback — bypasses @Observable coalescing.
-    func setWeight(_ w: Double) {
-        _weight = w
-        sendWeightNotification()
+    var weightGrams: Double = 0.0 {
+        didSet { if weightGrams != oldValue { sendWeightNotification() } }
     }
-    func setFlow(_ f: Double) {
-        _flow = f
-        sendWeightNotification()
+    var flowRate: Double = 0.0 {
+        didSet { if flowRate != oldValue { sendWeightNotification() } }
     }
-    private var setCount = 0
-
-    // MARK: - Display Polling
-
-    private var pollingTimer: Timer?
-
-    func startDisplayPolling() {
-        stopDisplayPolling()
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                guard let self else { return }
-                let w = self._weight
-                let f = self._flow
-                let changed = w != self.displayWeight || f != self.displayFlow
-                self.displayWeight = w
-                self.displayFlow = f
-                if changed {
-                    self.pollChangeCount += 1
-                    if self.pollChangeCount <= 5 {
-                        NSLog("[Poll] changed: w=\(w) f=\(f)")
-                    }
-                }
-            }
-        }
-    }
-    private var pollChangeCount = 0
-
-    func stopDisplayPolling() {
-        pollingTimer?.invalidate()
-        pollingTimer = nil
-    }
-
     var batteryPercent: Double = 85
     var unit: WeightUnit = .grams
     var mode: BookooBLE.ScaleMode = .weight
@@ -231,12 +182,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
 
     // UI controls
     var logMessages: [LogEntry] = []
-    var notificationInterval: Double = 0.05  // 50ms = 20fps, smooth without queue flood
-
-    /// Version tokens bumped on programmatic weight/flow changes so
-    /// ContinuousSlider knobs reflect external updates (Tare, commands).
-    var weightVersion = 0
-    var flowVersion = 0
+    var notificationInterval: Double = 0.05  // 50ms
 
     // Presets
     var presetWeights: [Preset] = [
@@ -366,8 +312,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private func handleCommand(_ cmd: BookooBLE.Command, data1: UInt8, data2: UInt8) {
         switch cmd {
         case .tare:
-            setWeight(0)
-            weightVersion &+= 1
+            weightGrams = 0
             log("⬅️ Tare → weight = 0")
 
         case .beep:
@@ -395,10 +340,8 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             log("⬅️ Reset Timer")
 
         case .tareAndStartTimer:
-            setWeight(0)
-            setFlow(0)
-            weightVersion &+= 1
-            flowVersion &+= 1
+            weightGrams = 0
+            flowRate = 0
             timerRunning = true
             timerElapsed = 0
             timerStartDate = Date()
@@ -574,59 +517,10 @@ struct LogEntry: Identifiable {
     let message: String
 }
 
-// MARK: - Continuous Slider
-
-/// NSSlider that reports every drag tick via callback. Uses a version token
-/// to force position updates for programmatic changes (e.g. Tare button).
-struct ContinuousSlider: NSViewRepresentable {
-    let value: Double       // current value (for programmatic updates only)
-    let range: ClosedRange<Double>
-    let version: Int        // increment to force knob update from outside
-    let onChanged: (Double) -> Void
-
-    func makeNSView(context: Context) -> NSSlider {
-        let slider = NSSlider(value: value, minValue: range.lowerBound, maxValue: range.upperBound, target: context.coordinator, action: #selector(Coordinator.changed(_:)))
-        slider.isContinuous = true
-        slider.controlSize = .small
-        context.coordinator.lastProgrammaticValue = value
-        return slider
-    }
-
-    func updateNSView(_ nsView: NSSlider, context: Context) {
-        // Only move knob when version changes (programmatic update like Tare)
-        if version != context.coordinator.lastVersion {
-            nsView.doubleValue = value
-            context.coordinator.lastProgrammaticValue = value
-            context.coordinator.lastVersion = version
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onChanged: onChanged)
-    }
-
-    final class Coordinator: NSObject {
-        let onChanged: (Double) -> Void
-        var lastVersion = 0
-        var lastProgrammaticValue: Double = 0
-
-        init(onChanged: @escaping (Double) -> Void) {
-            self.onChanged = onChanged
-        }
-
-        @MainActor @objc func changed(_ sender: NSSlider) {
-            onChanged(sender.doubleValue)
-        }
-    }
-}
-
 // MARK: - Content View
 
 struct ContentView: View {
     @Bindable var model: SimulatorModel
-
-    @State private var sliderWeight: Double = 0
-    @State private var sliderFlow: Double = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -720,13 +614,11 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                ContinuousSlider(value: sliderWeight, range: -10...50, version: model.weightVersion) { newValue in
-                    sliderWeight = newValue
-                    model.setWeight(newValue)
-                }
+                Slider(value: $model.weightGrams, in: -10...50)
+                    .controlSize(.small)
 
 
-                TextField("Weight", value: weightBinding(), format: .number.precision(.fractionLength(1)))
+                TextField("Weight", value: $model.weightGrams, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.trailing)
@@ -736,7 +628,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(sliderWeight, specifier: "%.1f") \(model.unit.symbol)")
+            Text("\(model.weightGrams, specifier: "%.1f") \(model.unit.symbol)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .monospacedDigit()
@@ -757,12 +649,10 @@ struct ContentView: View {
                 .font(.headline)
 
             HStack {
-                ContinuousSlider(value: sliderFlow, range: 0...15, version: model.flowVersion) { newValue in
-                    sliderFlow = newValue
-                    model.setFlow(newValue)
-                }
+                Slider(value: $model.flowRate, in: 0...15)
+                    .controlSize(.small)
 
-                TextField("Flow", value: flowBinding(), format: .number.precision(.fractionLength(1)))
+                TextField("Flow", value: $model.flowRate, format: .number.precision(.fractionLength(1)))
                     .frame(width: 70)
                     .textFieldStyle(.roundedBorder)
                     .multilineTextAlignment(.trailing)
@@ -772,7 +662,7 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("\(sliderFlow, specifier: "%.1f") g/s")
+            Text("\(model.flowRate, specifier: "%.1f") g/s")
                 .font(.title3)
                 .monospacedDigit()
                 .foregroundStyle(model.flowRate > 0 ? .blue : .secondary)
@@ -887,9 +777,7 @@ struct ContentView: View {
 
             HStack(spacing: 8) {
                 Button {
-                    sliderWeight = 0
-                    model.setWeight(0)
-                    model.weightVersion &+= 1
+                    model.weightGrams = 0
                     model.log("🎯 Manual Tare")
                 } label: {
                     Label("Tare", systemImage: "arrow.down.to.line")
@@ -898,9 +786,7 @@ struct ContentView: View {
                 .buttonStyle(.bordered)
 
                 Button {
-                    sliderFlow = 0
-                    model.setFlow(0)
-                    model.flowVersion &+= 1
+                    model.flowRate = 0
                     model.log("🎯 Stop Flow")
                 } label: {
                     Label("Stop Flow", systemImage: "pause.circle")
@@ -959,16 +845,6 @@ struct ContentView: View {
     }
 
     // MARK: - Helpers
-
-    @MainActor
-    private func weightBinding() -> Binding<Double> {
-        Binding(get: { model.weightGrams }, set: { model.setWeight($0) })
-    }
-
-    @MainActor
-    private func flowBinding() -> Binding<Double> {
-        Binding(get: { model.flowRate }, set: { model.setFlow($0) })
-    }
 
     private func formatTime(_ interval: TimeInterval) -> String {
         let totalSeconds = Int(interval)
