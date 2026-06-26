@@ -171,10 +171,27 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var weightGrams: Double = 0.0 {
         didSet {
             if weightGrams != oldValue {
-                if !isPouring { flowRate = 0.6 }  // signal measuring on iPhone
+                if !isPouring {
+                    flowRate = 0.6  // signal measuring on iPhone
+                    scheduleStableReset()
+                }
                 sendWeightNotification()
             }
         }
+    }
+
+    private var stableResetWorkItem: DispatchWorkItem?
+
+    private func scheduleStableReset() {
+        stableResetWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            Task { @MainActor in
+                self.flowRate = 0
+            }
+        }
+        stableResetWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: work)
     }
     var flowRate: Double = 0.0 {
         didSet { if flowRate != oldValue { sendWeightNotification() } }
