@@ -865,6 +865,7 @@ struct ContentView: View {
                     systemImage: model.isAdvertising ? "stop.circle.fill" : "play.circle.fill"
                 )
                 .frame(maxWidth: .infinity)
+                .padding(.horizontal, 8)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -874,10 +875,17 @@ struct ContentView: View {
                 model.weightGrams = 0
                 model.log("🎯 Manual Tare")
             } label: {
-                Label("Tare", systemImage: "arrow.down.to.line")
-                    .frame(maxWidth: .infinity)
+                HStack(spacing: 6) {
+                    Text("T")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                    Text("Tare")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 8)
             }
             .buttonStyle(.bordered)
+            .controlSize(.large)
         }
     }
 
