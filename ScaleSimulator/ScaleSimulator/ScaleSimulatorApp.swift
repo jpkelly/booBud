@@ -169,7 +169,12 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
 
     // Simulated scale state
     var weightGrams: Double = 0.0 {
-        didSet { if weightGrams != oldValue { sendWeightNotification() } }
+        didSet {
+            if weightGrams != oldValue {
+                if !isPouring { flowRate = 0.6 }  // signal measuring on iPhone
+                sendWeightNotification()
+            }
+        }
     }
     var flowRate: Double = 0.0 {
         didSet { if flowRate != oldValue { sendWeightNotification() } }
