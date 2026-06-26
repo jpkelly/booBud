@@ -355,6 +355,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
 
         peripheralManager.startAdvertising([
             CBAdvertisementDataLocalNameKey: BookooBLE.advertisedName,
+            CBAdvertisementDataServiceUUIDsKey: [BookooBLE.serviceUUID],
         ])
 
         isAdvertising = true
