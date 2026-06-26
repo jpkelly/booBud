@@ -247,8 +247,8 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
             if self.autoDetectPour,
                !self.brewTimer.isRunning,
                !reading.isStable,
-               newReading.grams > 0.5,
-               self.lastAutoStartWeight < 0.5 {
+               newReading.grams > 0.1,
+               self.lastAutoStartWeight < 0.1 {
                 self.brewTimer.reset()
                 self.brewTimer.startOrResume()
                 self.startDisplayTimer()
