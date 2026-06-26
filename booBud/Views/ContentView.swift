@@ -69,7 +69,7 @@ struct ContentView: View {
                     Text("\(viewModel.batteryPercent)%")
                         .font(.caption)
                 }
-                .foregroundStyle(viewModel.batteryPercent <= 10 ? .red : .secondary)
+                .foregroundStyle(viewModel.batteryPercent <= 10 ? .red : viewModel.batteryPercent <= 20 ? .yellow : .secondary)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(.ultraThinMaterial)
