@@ -180,6 +180,71 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var timerRunning = false
     var timerElapsed: TimeInterval = 0
 
+    // Pour simulation
+    var isPouring = false
+    private var pourTimer: Timer?
+    private var pourStartTime: Date = Date()
+    private var pourStartWeight: Double = 0
+    private let pourTarget: Double = 40
+    private let pourDuration: TimeInterval = 30
+    private var pourCurve: PourCurve = .linear
+
+    enum PourCurve: String, CaseIterable {
+        case linear
+        case easeIn    // slow start, fast finish
+        case easeOut   // fast start, slow finish
+
+        func progress(_ t: Double) -> Double {
+            switch self {
+            case .linear:  return t
+            case .easeIn:  return t * t * t
+            case .easeOut: return 1.0 - pow(1.0 - t, 3)
+            }
+        }
+
+        var label: String {
+            switch self {
+            case .linear:  return "Linear"
+            case .easeIn:  return "Slow → Fast"
+            case .easeOut: return "Fast → Slow"
+            }
+        }
+    }
+
+    func startPour(curve: PourCurve) {
+        stopPour()
+        pourCurve = curve
+        pourStartWeight = weightGrams
+        pourStartTime = Date()
+        isPouring = true
+        log("☕ Pour started: \(curve.label)")
+        pourTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.pourTick()
+            }
+        }
+    }
+
+    func stopPour() {
+        pourTimer?.invalidate()
+        pourTimer = nil
+        isPouring = false
+    }
+
+    private func pourTick() {
+        let elapsed = Date().timeIntervalSince(pourStartTime)
+        let t = min(elapsed / pourDuration, 1.0)
+        let amount = pourCurve.progress(t) * pourTarget
+        weightGrams = pourStartWeight + amount
+        flowRate = t < 1.0 ? (pourTarget / pourDuration) * (pourCurve.progress(t + 0.05) - pourCurve.progress(t)) / 0.05 : 0
+
+        if t >= 1.0 {
+            stopPour()
+            flowRate = 0
+            log("☕ Pour complete: \(String(format: "%.0f", weightGrams))g")
+        }
+    }
+
     // UI controls
     var logMessages: [LogEntry] = []
     var notificationInterval: Double = 0.05  // 50ms
@@ -270,6 +335,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         isConnected = false
         connectedCentral = nil
         stopDataTimer()
+        stopPour()
         log("🛑 Stopped advertising")
     }
 
@@ -548,6 +614,45 @@ struct ContentView: View {
             actionsSection
 
             weightSection
+
+            // Pour simulation buttons
+            VStack(alignment: .leading, spacing: 6) {
+                Label("Simulate Pour", systemImage: "water.waves")
+                    .font(.subheadline)
+
+                HStack(spacing: 6) {
+                    ForEach(SimulatorModel.PourCurve.allCases, id: \.rawValue) { curve in
+                        Button {
+                            model.startPour(curve: curve)
+                        } label: {
+                            Text(curve.label)
+                                .font(.caption)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                        .disabled(model.isPouring)
+                    }
+                }
+
+                if model.isPouring {
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                        Text("Pouring… \(String(format: "%.0f", model.weightGrams))g")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Stop") {
+                            model.stopPour()
+                            model.flowRate = 0
+                            model.log("☕ Pour cancelled")
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    }
+                }
+            }
 
             Divider()
 
