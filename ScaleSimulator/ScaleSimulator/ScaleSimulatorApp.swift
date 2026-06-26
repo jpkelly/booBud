@@ -370,12 +370,6 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             onSubscribedCentrals: nil
         )
 
-        let didSend = peripheralManager.updateValue(
-            packet,
-            for: weightCharacteristic,
-            onSubscribedCentrals: nil
-        )
-
         if !didSend {
             logger.warning("UpdateValue failed — transmit queue full")
         }
