@@ -41,6 +41,10 @@ final class ScaleBLEController: NSObject, @unchecked Sendable {
     /// Last connected peripheral UUID — used for auto-reconnect on disconnect.
     private var lastConnectedUUID: UUID?
 
+    /// Strong reference to a peripheral during connection attempt.
+    /// Prevents the "Did you forget to keep a reference?" API misuse warning.
+    private var connectingPeripheral: CBPeripheral?
+
     /// Prevent reconnect storms — only auto-reconnect once per unexpected disconnect.
     private var autoReconnectAttempted = false
 
@@ -122,7 +126,7 @@ final class ScaleBLEController: NSObject, @unchecked Sendable {
             return
         }
         logger.info("Auto-reconnecting to \(peripheral.name ?? "unknown")")
-        connectedPeripheral = peripheral
+        connectingPeripheral = peripheral  // keep alive until didConnect/didFailToConnect
         peripheral.delegate = self
         centralManager.connect(peripheral, options: nil)
     }
@@ -194,8 +198,9 @@ extension ScaleBLEController: CBCentralManagerDelegate {
                 reconnectToLastDevice(uuid: uuid)
             }
             // Auto-reconnect if we were previously connected
-            if connectedPeripheral != nil {
-                central.connect(connectedPeripheral!, options: nil)
+            if let peripheral = connectedPeripheral {
+                connectingPeripheral = peripheral
+                central.connect(peripheral, options: nil)
             }
         case .poweredOff, .resetting:
             isConnected = false
@@ -245,6 +250,7 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         logger.info("Connected to \(peripheral.name ?? "unknown")")
         isConnected = true
         connectedPeripheral = peripheral
+        connectingPeripheral = nil
         lastConnectedUUID = peripheral.identifier
         autoReconnectAttempted = false
         peripheral.delegate = self
@@ -256,6 +262,7 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         logger.error("Failed to connect: \(error?.localizedDescription ?? "unknown")")
         isConnected = false
         connectedPeripheral = nil
+        connectingPeripheral = nil
         delegate?.scaleController(self, didChangeConnectionState: false)
     }
 
