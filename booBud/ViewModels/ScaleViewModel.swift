@@ -135,8 +135,9 @@ final class ScaleViewModel {
         if let uuidString = UserDefaults.standard.string(forKey: "lastPeripheralUUID"),
            let uuid = UUID(uuidString: uuidString) {
             connectedScaleName = UserDefaults.standard.string(forKey: "lastPeripheralName")
-            connectionState = .connecting(connectedScaleName ?? "Scale")
-            bleController.reconnectToLastDevice(uuid: uuid)
+            let name = connectedScaleName ?? "Scale"
+            connectionState = .connecting(name)
+            bleController.reconnectToLastDevice(uuid: uuid, name: name)
             return
         }
 
