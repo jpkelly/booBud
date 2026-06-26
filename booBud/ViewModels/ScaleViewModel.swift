@@ -130,6 +130,15 @@ final class ScaleViewModel {
             return
         }
         discoveredScales.removeAll()
+
+        if let uuidString = UserDefaults.standard.string(forKey: "lastPeripheralUUID"),
+           let uuid = UUID(uuidString: uuidString) {
+            connectedScaleName = UserDefaults.standard.string(forKey: "lastPeripheralName")
+            connectionState = .connecting(connectedScaleName ?? "Scale")
+            bleController.reconnectToLastDevice(uuid: uuid)
+            return
+        }
+
         connectionState = .scanning
         bleController.startScanning()
     }
@@ -141,6 +150,8 @@ final class ScaleViewModel {
     func connect(to scale: DiscoveredScale) {
         connectedScaleName = scale.name
         connectionState = .connecting(scale.name)
+        UserDefaults.standard.set(scale.peripheral.identifier.uuidString, forKey: "lastPeripheralUUID")
+        UserDefaults.standard.set(scale.name, forKey: "lastPeripheralName")
         bleController.connect(to: scale.peripheral)
     }
 
