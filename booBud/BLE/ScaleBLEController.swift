@@ -12,7 +12,7 @@ protocol ScaleBLEControllerDelegate: AnyObject {
 }
 
 /// Manages all BLE communication with the Bookoo Mini Scale.
-final class ScaleBLEController: NSObject {
+final class ScaleBLEController: NSObject, @unchecked Sendable {
 
     // MARK: - Public Properties
 
