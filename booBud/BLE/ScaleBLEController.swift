@@ -196,12 +196,14 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         let localName = advertisementData[CBAdvertisementDataLocalNameKey] as? String ?? ""
         let displayName = localName.isEmpty ? name : localName
 
+        // Log all ad data keys to see what macOS actually sends
+        logger.info("🔍 '\(displayName)' RSSI=\(RSSI) adKeys=\(advertisementData.keys.map { "\($0)" }) localName='\(localName)'")
+
         // Only show devices whose name starts with "BOOKOO"
         let matchesPrefix = displayName.hasPrefix(BookooProtocol.advertisedNamePrefix)
         guard matchesPrefix else { return }
         guard RSSI.compare(rssiThreshold) == .orderedDescending else { return }
 
-        logger.info("🔍 \(displayName) RSSI=\(RSSI)")
         delegate?.scaleController(self, didDiscoverScale: peripheral, localName: displayName, rssi: RSSI)
     }
 
