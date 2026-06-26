@@ -112,11 +112,10 @@ struct WeightGraphView: View {
 
     private var effectiveMaxWeight: Double {
         let dataMax = data.map(\.weight).max() ?? 0
-        // Snap to next nice round number
         let ceil10 = ceil(dataMax / 10) * 10
         let ceil50 = ceil(dataMax / 50) * 50
         let ceil100 = ceil(dataMax / 100) * 100
-        if dataMax < 20 { return max(ceil10, 10) }
+        if dataMax < 20 { return max(ceil10, 50) }
         if dataMax < 100 { return ceil50 }
         return ceil100
     }
