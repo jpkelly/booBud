@@ -101,6 +101,8 @@ final class ScaleBLEController: NSObject {
         let peripherals = centralManager.retrievePeripherals(withIdentifiers: [uuid])
         if let peripheral = peripherals.first {
             logger.info("Reconnecting to last device: \(peripheral.name ?? "unknown")")
+            connectedPeripheral = peripheral
+            peripheral.delegate = self
             centralManager.connect(peripheral, options: nil)
         } else {
             logger.info("Last device not in cache, falling back to scan")
