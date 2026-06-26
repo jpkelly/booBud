@@ -250,12 +250,6 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private var displayTimer: Timer?
     private var timerStartDate: Date?
 
-    /// Buffered send: tracks last successfully transmitted values to avoid
-    /// queue floods. Resends pending changes when peripheralManagerIsReady fires.
-    private var lastSentWeight: Double?
-    private var lastSentFlow: Double?
-    private var hasPendingUpdate = false
-
     // Logger
     private let logger = Logger(subsystem: "com.boobud.simulator", category: "Simulator")
 
@@ -346,39 +340,21 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private func sendWeightNotification() {
         guard isConnected, connectedCentral != nil else { return }
 
-        // Only send if value actually changed
-        let w = weightGrams
-        let f = flowRate
-        if w == lastSentWeight && f == lastSentFlow { return }
-
         let ms = UInt32(timerElapsed * 1000)
         let packet = BookooBLE.buildWeightPacket(
             milliseconds: ms,
-            weightGrams: w,
-            flowRate: f,
+            weightGrams: weightGrams,
+            flowRate: flowRate,
             batteryPercent: UInt8(batteryPercent),
             unit: unit == .grams ? 0x01 : 0x02
         )
 
-        let didSend = peripheralManager.updateValue(
+        peripheralManager.updateValue(
             packet,
             for: weightCharacteristic,
             onSubscribedCentrals: nil
         )
-
-        if didSend {
-            lastSentWeight = w
-            lastSentFlow = f
-            hasPendingUpdate = false
-        } else {
-            hasPendingUpdate = true
-        }
-    }
-
-    /// Called when transmit queue drains — resend if value changed since last success.
-    private func flushPendingUpdate() {
-        guard hasPendingUpdate else { return }
-        sendWeightNotification()
+        // Silently drop if queue full — BLE stack self-throttles
     }
 
     // MARK: - Command Handling
@@ -558,11 +534,7 @@ extension SimulatorModel: CBPeripheralManagerDelegate {
         }
     }
 
-    nonisolated func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
-        Task { @MainActor in
-            flushPendingUpdate()
-        }
-    }
+    nonisolated func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {}
 }
 
 // MARK: - Types
