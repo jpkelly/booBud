@@ -185,11 +185,13 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     /// Called by slider callback — bypasses @Observable coalescing.
     func setWeight(_ w: Double) {
         _weight = w
+        sendWeightNotification()
         setCount += 1
         if setCount <= 3 { NSLog("[Set] weight = \(w)") }
     }
     func setFlow(_ f: Double) {
         _flow = f
+        sendWeightNotification()
         setCount += 1
         if setCount <= 3 { NSLog("[Set] flow = \(f)") }
     }
