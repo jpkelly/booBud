@@ -20,7 +20,7 @@ struct BrewTimerView: View {
                 } label: {
                     Image(systemName: viewModel.brewTimer.isRunning ? "stop.fill" : "play.fill")
                         .font(.title2)
-                        .frame(width: 60, height: 60)
+                        .frame(width: 72, height: 64)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(viewModel.brewTimer.isRunning ? .red : .orange)
@@ -30,12 +30,13 @@ struct BrewTimerView: View {
                     viewModel.tare()
                 } label: {
                     VStack(spacing: 4) {
-                        Image(systemName: "scalemass")
+                        Text("T")
                             .font(.title2)
+                            .fontWeight(.bold)
                         Text("Tare")
                             .font(.caption)
                     }
-                    .frame(width: 60, height: 60)
+                    .frame(width: 72, height: 64)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.secondary)
