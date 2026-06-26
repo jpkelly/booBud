@@ -236,9 +236,15 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     func startPour(curve: PourCurve) {
         stopPour()
         pourCurve = curve
-        pourStartWeight = weightGrams
+        weightGrams = 0     // tare
+        flowRate = 0.6      // signal measuring
+        pourStartWeight = 0
         pourStartTime = Date()
         isPouring = true
+        timerRunning = true
+        timerElapsed = 0
+        timerStartDate = Date()
+        startDisplayTimer()
         log("☕ Pour started: \(curve.label)")
         pourTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             Task { @MainActor in
@@ -251,6 +257,8 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         pourTimer?.invalidate()
         pourTimer = nil
         isPouring = false
+        timerRunning = false
+        stopDisplayTimer()
     }
 
     private func pourTick() {
@@ -258,8 +266,9 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         let t = min(elapsed / pourDuration, 1.0)
         let amount = pourCurve.progress(t) * pourTarget
 
-        // Set flow first so didSet sends packet with correct flow rate
-        flowRate = t < 1.0 ? (pourTarget / pourDuration) * (pourCurve.progress(t + 0.05) - pourCurve.progress(t)) / 0.05 : 0
+        // Set flow first — ensure minimum 0.6 so iPhone shows orange dot during pour
+        let rawFlow = t < 1.0 ? (pourTarget / pourDuration) * (pourCurve.progress(t + 0.05) - pourCurve.progress(t)) / 0.05 : 0
+        flowRate = t < 1.0 ? max(rawFlow, 0.6) : 0
         weightGrams = pourStartWeight + amount
 
         if t >= 1.0 {
