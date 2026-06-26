@@ -4,12 +4,13 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 
 ## Features
 
-- **BLE connection** to Bookoo Mini Scale (official protocol)
+- **BLE connection** to Bookoo Mini Scale (official protocol) with auto-reconnect
 - **Live weight display** — grams or ounces, large readable digits
-- **Brew timer** — start/stop/reset with 0.1s precision
+- **Brew timer** — start/stop/reset with 0.1s precision, or auto-start on pour detection
 - **Tare & Brew button** — one tap to zero the scale and start the timer
-- **Stability indicator** — shows when weight settles
-- **Battery level** from the scale
+- **Auto-detect pour** — optionally auto-starts the timer when weight crosses 0.1g
+- **Battery level** from the scale with low-battery color warnings (yellow ≤20%, red ≤10%)
+- **ScaleSimulator** — companion macOS app that simulates a Bookoo scale for testing
 
 ## Screenshots
 
@@ -37,9 +38,10 @@ The app stays installed for 7 days — just rebuild to refresh.
 
 booBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using the [official open-source protocol](https://github.com/BooKooCode/OpenSource):
 
-- **Service UUID**: `0xFFE0`
+- **Service UUID**: `0xFFE0` (primary)
 - **Weight notifications**: characteristic `0xFF11` (20-byte packets with grams, flow rate, battery, timer)
-- **Commands**: characteristic `0xFF12` (tare, timer start/stop/reset)
+- **Commands**: characteristic `0xFF12` (tare, timer start/stop/reset, mode switch)
+- **Device Name**: characteristic `0xFF1E` (readable, used for authoritative display name)
 
 ## Project Structure
 
@@ -49,9 +51,12 @@ booBud/
 ├── BLE/              # BookooProtocol + ScaleBLEController
 ├── Models/           # WeightReading, WeightUnit, BrewTimerState
 ├── ViewModels/       # ScaleViewModel (@Observable state)
-├── Views/            # ContentView, WeightDisplay, BrewTimer, Controls, DeviceDiscovery
+├── Views/            # ContentView, WeightDisplay, BrewTimer, Controls, DeviceDiscovery, Settings
 ├── Resources/        # Info.plist (BLE permissions)
 └── Assets.xcassets/  # App icon, accent color
+
+ScaleSimulator/
+└── ScaleSimulator/   # macOS BLE peripheral companion — simulates a Bookoo scale for testing
 ```
 
 ## License
