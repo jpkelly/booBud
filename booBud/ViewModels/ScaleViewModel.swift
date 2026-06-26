@@ -246,7 +246,7 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
             // Auto-start timer when weight crosses threshold (if enabled)
             if self.autoDetectPour,
                !self.brewTimer.isRunning,
-               newReading.grams > 0.1,
+               newReading.grams >= 0.1,
                self.lastAutoStartWeight < 0.1 {
                 logger.info("⏱️ Auto-detect triggered: grams=\(newReading.grams) last=\(self.lastAutoStartWeight) stable=\(reading.isStable)")
                 self.brewTimer.reset()
