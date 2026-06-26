@@ -183,18 +183,8 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     var displayFlow: Double = 0
 
     /// Called by slider callback — bypasses @Observable coalescing.
-    func setWeight(_ w: Double) {
-        _weight = w
-        sendWeightNotification()
-        setCount += 1
-        if setCount <= 3 { NSLog("[Set] weight = \(w)") }
-    }
-    func setFlow(_ f: Double) {
-        _flow = f
-        sendWeightNotification()
-        setCount += 1
-        if setCount <= 3 { NSLog("[Set] flow = \(f)") }
-    }
+    func setWeight(_ w: Double) { _weight = w }
+    func setFlow(_ f: Double) { _flow = f }
     private var setCount = 0
 
     // MARK: - Display Polling
@@ -235,7 +225,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
 
     // UI controls
     var logMessages: [LogEntry] = []
-    var notificationInterval: Double = 0.1  // 100ms default
+    var notificationInterval: Double = 0.05  // 50ms = 20fps, smooth without queue flood
 
     /// Version tokens bumped on programmatic weight/flow changes so
     /// ContinuousSlider knobs reflect external updates (Tare, commands).
@@ -259,7 +249,12 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     private var dataTimer: Timer?
     private var displayTimer: Timer?
     private var timerStartDate: Date?
-    private var pktCount = 0
+
+    /// Buffered send: tracks last successfully transmitted values to avoid
+    /// queue floods. Resends pending changes when peripheralManagerIsReady fires.
+    private var lastSentWeight: Double?
+    private var lastSentFlow: Double?
+    private var hasPendingUpdate = false
 
     // Logger
     private let logger = Logger(subsystem: "com.boobud.simulator", category: "Simulator")
@@ -349,22 +344,21 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
     }
 
     private func sendWeightNotification() {
-        guard isConnected,
-              connectedCentral != nil else { return }
+        guard isConnected, connectedCentral != nil else { return }
+
+        // Only send if value actually changed
+        let w = weightGrams
+        let f = flowRate
+        if w == lastSentWeight && f == lastSentFlow { return }
 
         let ms = UInt32(timerElapsed * 1000)
         let packet = BookooBLE.buildWeightPacket(
             milliseconds: ms,
-            weightGrams: weightGrams,
-            flowRate: flowRate,
+            weightGrams: w,
+            flowRate: f,
             batteryPercent: UInt8(batteryPercent),
             unit: unit == .grams ? 0x01 : 0x02
         )
-
-        pktCount += 1
-        if pktCount <= 3 || pktCount % 50 == 0 {
-            NSLog("[BLE] packet #\(pktCount) weight=\(weightGrams) flow=\(flowRate)")
-        }
 
         let didSend = peripheralManager.updateValue(
             packet,
@@ -372,9 +366,19 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
             onSubscribedCentrals: nil
         )
 
-        if !didSend {
-            logger.warning("UpdateValue failed — transmit queue full")
+        if didSend {
+            lastSentWeight = w
+            lastSentFlow = f
+            hasPendingUpdate = false
+        } else {
+            hasPendingUpdate = true
         }
+    }
+
+    /// Called when transmit queue drains — resend if value changed since last success.
+    private func flushPendingUpdate() {
+        guard hasPendingUpdate else { return }
+        sendWeightNotification()
     }
 
     // MARK: - Command Handling
@@ -555,8 +559,9 @@ extension SimulatorModel: CBPeripheralManagerDelegate {
     }
 
     nonisolated func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
-        // Transmit queue drained — ready for next updateValue
-        logger.debug("Peripheral ready for next update")
+        Task { @MainActor in
+            flushPendingUpdate()
+        }
     }
 }
 
