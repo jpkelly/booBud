@@ -627,17 +627,6 @@ struct ContentView: View {
                 Text(model.unit.symbol)
                     .foregroundStyle(.secondary)
             }
-
-            Text("\(model.weightGrams, specifier: "%.1f") \(model.unit.symbol)")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .monospacedDigit()
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.primary.opacity(0.05))
-                )
         }
     }
 
@@ -661,11 +650,6 @@ struct ContentView: View {
                 Text("g/s")
                     .foregroundStyle(.secondary)
             }
-
-            Text("\(model.flowRate, specifier: "%.1f") g/s")
-                .font(.title3)
-                .monospacedDigit()
-                .foregroundStyle(model.flowRate > 0 ? .blue : .secondary)
         }
     }
 
