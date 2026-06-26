@@ -80,6 +80,7 @@ final class ScaleViewModel {
 
     private let bleController = ScaleBLEController()
     private let logger = Logger(subsystem: "com.boobud.viewmodel", category: "ScaleViewModel")
+    private var lastAutoStartWeight: Double = 0
 
     /// Display-link style timer to advance the brew timer smoothly.
     private var displayTimer: Timer?
@@ -223,10 +224,23 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
         didReceiveReading reading: BookooProtocol.WeightData
     ) {
         Task { @MainActor in
-            self.currentReading = WeightReading(
+            let newReading = WeightReading(
                 grams: reading.weightGrams,
                 isStable: reading.isStable
             )
+            self.currentReading = newReading
+
+            // Auto-start timer when a pour is detected:
+            // weight increasing from near-zero with measurable flow
+            if !self.brewTimer.isRunning,
+               !reading.isStable,
+               newReading.grams > 0.5,
+               self.lastAutoStartWeight < 0.5 {
+                self.brewTimer.reset()
+                self.brewTimer.startOrResume()
+                self.startDisplayTimer()
+            }
+            self.lastAutoStartWeight = newReading.grams
         }
     }
 
