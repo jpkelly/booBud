@@ -219,7 +219,7 @@ final class SimulatorModel: NSObject, @unchecked Sendable {
         func progress(_ t: Double) -> Double {
             switch self {
             case .linear:  return t
-            case .easeIn:  return t * t * t
+            case .easeIn:  return t * t          // quadratic, visible earlier than cubic
             case .easeOut: return 1.0 - pow(1.0 - t, 3)
             }
         }
