@@ -97,7 +97,7 @@ struct DeviceDiscoveryView: View {
                     Text(scale.name)
                         .font(.body)
                         .fontWeight(.medium)
-                    Text("Signal: \(scale.signalBars)  \(scale.rssi) dBm")
+                    Text("Signal: \(scale.rssi) dBm")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

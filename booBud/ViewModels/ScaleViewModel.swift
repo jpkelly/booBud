@@ -106,12 +106,6 @@ final class ScaleViewModel {
         let name: String
         let rssi: Int
 
-        var signalBars: String {
-            if rssi > -50 { return "📶📶📶" }
-            if rssi > -65 { return "📶📶" }
-            return "📶"
-        }
-
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
         }
