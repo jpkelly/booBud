@@ -40,12 +40,68 @@ final class ScaleViewModel {
         didSet { UserDefaults.standard.set(autoDetectPour, forKey: "autoDetectPour") }
     }
 
+    /// Saved brew selected as an underlay reference on the live graph.
+    /// When non-nil, the graph renders the saved brew's weight & flow lines
+    /// as dimmed dashed ghost lines behind the live data. Persisted to UserDefaults.
+    var underlayBrew: SavedBrew? {
+        didSet {
+            if let id = underlayBrew?.id {
+                UserDefaults.standard.set(id.uuidString, forKey: "underlayBrewID")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "underlayBrewID")
+            }
+        }
+    }
+
+    /// Restore the persisted underlay brew from the BrewStore after app launch.
+    func restoreUnderlay(from store: BrewStore) {
+        guard let idString = UserDefaults.standard.string(forKey: "underlayBrewID"),
+              let id = UUID(uuidString: idString) else { return }
+        underlayBrew = store.brews.first { $0.id == id }
+    }
+
+    /// Whether the underlay reference chip is hidden (× dismissed).
+    /// Ghost lines still render — only the banner is hidden. Persisted to UserDefaults.
+    var hideUnderlayChip: Bool = UserDefaults.standard.bool(forKey: "hideUnderlayChip") {
+        didSet { UserDefaults.standard.set(hideUnderlayChip, forKey: "hideUnderlayChip") }
+    }
+
+    /// Whether recall/underlay status indicators should float over the graph
+    /// (true) or stack above it and push it down (false). On by default.
+    var graphOverlayIndicators: Bool = {
+        if UserDefaults.standard.object(forKey: "graphOverlayIndicators") == nil {
+            return true
+        }
+        return UserDefaults.standard.bool(forKey: "graphOverlayIndicators")
+    }() {
+        didSet { UserDefaults.standard.set(graphOverlayIndicators, forKey: "graphOverlayIndicators") }
+    }
+
     /// Weight threshold in grams that triggers auto-start when crossed.
     var pourTriggerGrams: Double = {
         let val = UserDefaults.standard.double(forKey: "pourTriggerGrams")
         return val > 0 ? val : 0.5
     }() {
         didSet { UserDefaults.standard.set(pourTriggerGrams, forKey: "pourTriggerGrams") }
+    }
+
+    /// Whether the flow rate Y-axis should auto-scale. When off, uses `flowMax` as the fixed maximum.
+    /// On by default — persisted to UserDefaults.
+    var flowAutoRange: Bool = {
+        if UserDefaults.standard.object(forKey: "flowAutoRange") == nil {
+            return true
+        }
+        return UserDefaults.standard.bool(forKey: "flowAutoRange")
+    }() {
+        didSet { UserDefaults.standard.set(flowAutoRange, forKey: "flowAutoRange") }
+    }
+
+    /// Fixed maximum for the flow rate Y-axis when `flowAutoRange` is off.
+    var flowMax: Double = {
+        let val = UserDefaults.standard.double(forKey: "flowMax")
+        return val > 0 ? val : 5.0
+    }() {
+        didSet { UserDefaults.standard.set(flowMax, forKey: "flowMax") }
     }
 
     /// Scale operating mode — persisted to UserDefaults for reference.
@@ -59,6 +115,11 @@ final class ScaleViewModel {
     /// Whether the graph should be visible.
     var showGraph: Bool {
         brewTimer.isRunning || weightHistory.count > 1
+    }
+
+    /// Whether there is enough recorded data to save a brew.
+    var canSaveBrew: Bool {
+        weightHistory.count > 1
     }
 
     // MARK: - Computed

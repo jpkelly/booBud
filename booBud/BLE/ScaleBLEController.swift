@@ -264,7 +264,7 @@ extension ScaleBLEController: CBCentralManagerDelegate {
         lastConnectedUUID = peripheral.identifier
         autoReconnectAttempted = false
         peripheral.delegate = self
-        peripheral.discoverServices([BookooProtocol.serviceUUID])
+        peripheral.discoverServices(nil)
         delegate?.scaleController(self, didChangeConnectionState: true)
     }
 
@@ -315,8 +315,8 @@ extension ScaleBLEController: CBPeripheralDelegate {
             return
         }
 
-        for service in services where service.uuid == BookooProtocol.serviceUUID {
-            logger.info("Found Bookoo service, discovering characteristics…")
+        for service in services {
+            logger.info("Discovering characteristics in service \(service.uuid.uuidString)…")
             peripheral.discoverCharacteristics(
                 [BookooProtocol.weightCharUUID, BookooProtocol.commandCharUUID, BookooProtocol.nameCharUUID],
                 for: service

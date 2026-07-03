@@ -9,15 +9,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    HStack {
-                        Text("Scale Mode")
-                        Spacer()
-                        Text(viewModel.scaleMode.label)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
                 Section("Auto-Stop Timer") {
                     Toggle("Auto-stop", isOn: $viewModel.autoStopEnabled)
                     if viewModel.autoStopEnabled {
@@ -54,6 +45,22 @@ struct SettingsView: View {
                             Text("Grams")
                         }
                     }
+                }
+
+                Section("Graph") {
+                    Toggle("Flow Auto Range", isOn: $viewModel.flowAutoRange)
+                    if !viewModel.flowAutoRange {
+                        HStack {
+                            Text("Flow axis max")
+                            Spacer()
+                            Text(String(format: "%.1f g/s", viewModel.flowMax))
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $viewModel.flowMax, in: 1...20, step: 0.5) {
+                            Text("Flow max")
+                        }
+                    }
+                    Toggle("Overlay status on graph", isOn: $viewModel.graphOverlayIndicators)
                 }
 
                 Section {

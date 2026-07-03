@@ -7,8 +7,8 @@ enum BookooProtocol {
 
     // MARK: - BLE Identifiers
 
-    /// 128-bit Service UUID: 0000FFE0-0000-1000-8000-00805F9B34FB
-    static let serviceUUID = CBUUID(string: "FFE0")
+    /// 128-bit Service UUID: 00000FFE-0000-1000-8000-00805F9B34FB
+    static let serviceUUID = CBUUID(string: "0FFE")
 
     /// Command characteristic — write commands to the scale
     static let commandCharUUID = CBUUID(string: "FF12")

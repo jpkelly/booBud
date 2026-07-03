@@ -5,7 +5,10 @@ struct ContentView: View {
     @State private var viewModel = ScaleViewModel()
     @State private var showDevicePicker = false
     @State private var showSettings = false
+    @State private var showBrewHistory = false
     @State private var splashOpacity: Double = 1
+    @State private var brewStore = BrewStore()
+    @State private var recalledBrew: SavedBrew?
 
     var body: some View {
         ZStack {
@@ -34,15 +37,55 @@ struct ContentView: View {
 
                 BrewTimerView(viewModel: viewModel)
 
-                WeightGraphView(
-                    data: viewModel.weightHistory,
-                    flowData: viewModel.flowRateHistory,
-                    displayUnit: viewModel.displayUnit
-                )
-                    .frame(height: 200)
-                    .padding(.leading, 4)
-                    .padding(.trailing, 16)
-                    .padding(.top, 80)
+                VStack(spacing: 4) {
+                    if viewModel.graphOverlayIndicators {
+                        // Overlay mode: indicators float over the graph — no layout shift
+                        ZStack(alignment: .top) {
+                            WeightGraphView(
+                                data: graphWeightData,
+                                flowData: graphFlowData,
+                                displayUnit: recalledBrew?.displayUnit ?? viewModel.displayUnit,
+                                flowAutoRange: viewModel.flowAutoRange,
+                                flowMax: viewModel.flowMax,
+                                underlayWeight: viewModel.underlayBrew?.weightPoints.asWeightTuples ?? [],
+                                underlayFlow: viewModel.underlayBrew?.flowPoints.asFlowTuples ?? []
+                            )
+                                .frame(height: 200)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    showBrewHistory = true
+                                }
+
+                            if hasStatusIndicators {
+                                statusOverlayContent
+                                    .padding(.top, 4)
+                            }
+                        }
+                    } else {
+                        // Legacy mode: indicators stack above — graph shifts down
+                        if hasStatusIndicators {
+                            statusOverlayContent
+                        }
+
+                        WeightGraphView(
+                            data: graphWeightData,
+                            flowData: graphFlowData,
+                            displayUnit: recalledBrew?.displayUnit ?? viewModel.displayUnit,
+                            flowAutoRange: viewModel.flowAutoRange,
+                            flowMax: viewModel.flowMax,
+                            underlayWeight: viewModel.underlayBrew?.weightPoints.asWeightTuples ?? [],
+                            underlayFlow: viewModel.underlayBrew?.flowPoints.asFlowTuples ?? []
+                        )
+                            .frame(height: 200)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                showBrewHistory = true
+                            }
+                    }
+                }
+                .padding(.leading, 4)
+                .padding(.trailing, 4)
+                .padding(.top, 80)
 
                 Spacer()
             }
@@ -66,8 +109,14 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView(viewModel: viewModel)
         }
+        .sheet(isPresented: $showBrewHistory) {
+            BrewHistoryView(viewModel: viewModel, store: brewStore) { brew in
+                recalledBrew = brew
+            }
+        }
         .onAppear {
             viewModel.startScanning()
+            viewModel.restoreUnderlay(from: brewStore)
             scheduleSplashDismissal()
         }
         .onChange(of: viewModel.connectionState) { _, newState in
@@ -168,5 +217,94 @@ struct ContentView: View {
         case .connected(let n):  return n
         case .failed(let e):     return e
         }
+    }
+
+    // MARK: - Graph data (live vs. recall)
+
+    /// Returns recalled brew weight data if viewing a saved brew, otherwise live history.
+    private var graphWeightData: [(elapsed: Double, weight: Double)] {
+        if let brew = recalledBrew {
+            return brew.weightPoints.asWeightTuples
+        }
+        return viewModel.weightHistory
+    }
+
+    /// Returns recalled brew flow data if viewing a saved brew, otherwise live history.
+    private var graphFlowData: [(elapsed: Double, flowRate: Double)] {
+        if let brew = recalledBrew {
+            return brew.flowPoints.asFlowTuples
+        }
+        return viewModel.flowRateHistory
+    }
+
+    // MARK: - Status indicators (recall + underlay, sized to match graph legend)
+
+    /// Whether any status indicator is currently visible.
+    private var hasStatusIndicators: Bool {
+        recalledBrew != nil || (viewModel.underlayBrew != nil && !viewModel.hideUnderlayChip)
+    }
+
+    /// Unified chip row — floats over the graph in overlay mode, stacks above in legacy mode.
+    /// Font size 9 matches the graph legend and axis labels.
+    @ViewBuilder
+    private var statusOverlayContent: some View {
+        HStack(spacing: 6) {
+            if recalledBrew != nil {
+                recallChip
+            }
+            if let underlay = viewModel.underlayBrew, !viewModel.hideUnderlayChip {
+                underlayChip(underlay)
+            }
+        }
+        .padding(.horizontal, 6)
+    }
+
+    /// Recall indicator chip — tap to return to live data.
+    private var recallChip: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                recalledBrew = nil
+            }
+        } label: {
+            HStack(spacing: 3) {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(.system(size: 9))
+                Text("Viewing: \(recalledBrew?.name ?? "Saved Brew")")
+                    .font(.system(size: 9))
+                Text("· Back")
+                    .font(.system(size: 9))
+                    .underline()
+                Image(systemName: "xmark")
+                    .font(.system(size: 8))
+            }
+            .foregroundStyle(.cyan.opacity(0.9))
+            .padding(.vertical, 3)
+            .padding(.horizontal, 6)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 5))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Underlay reference chip — tap × to hide chip (ghost lines stay).
+    private func underlayChip(_ brew: SavedBrew) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                viewModel.hideUnderlayChip = true
+            }
+        } label: {
+            HStack(spacing: 3) {
+                Image(systemName: "chart.line.flattrend.xyaxis")
+                    .font(.system(size: 9))
+                Text("Ref: \(brew.name)")
+                    .font(.system(size: 9))
+                Image(systemName: "xmark")
+                    .font(.system(size: 8))
+            }
+            .foregroundStyle(.gray.opacity(0.85))
+            .padding(.vertical, 3)
+            .padding(.horizontal, 6)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 5))
+        }
+        .buttonStyle(.plain)
     }
 }

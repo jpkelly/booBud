@@ -7,114 +7,73 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04FF972756ACD993E4A31847 /* BooBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */; };
-		0C849B0C4874D59E093D0588 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92A83F2C70C397207E3D06C /* ControlBarView.swift */; };
-		0FDE97C6A89E6E809E423D95 /* ScaleReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8985AB58F1A75882313EF8F7 /* ScaleReading.swift */; };
-		3088F87598DD717552767F91 /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8B9B7201B6DDFB7C5D5096 /* ScaleViewModel.swift */; };
-		3F860C15D172B1A4EF608A24 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C247D7C600AAFF57D58BEB89 /* LaunchScreen.storyboard */; };
-		425FBBF7A3216ABC24FA2727 /* WeightUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B9E68C2366ECE5F5FCB400 /* WeightUnit.swift */; };
-		4B43B00770EAFD9F8787285E /* BrewTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926791E7D105AD9786204536 /* BrewTimerState.swift */; };
-		859A3C55173A609B637F0FFF /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A7AD887E8D26E90E5D9F6FE /* background.png */; };
-		8963695131007AF40DD75F30 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E89EF36C5C59731DD1DC6967 /* icon.png */; };
-		933B16E2A2651871AAD73842 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 928CEE6E057B992D347163DB /* Assets.xcassets */; };
-		A23774187790F944A172A154 /* BrewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74857F4BBB353D1B2A266AB9 /* BrewTimerView.swift */; };
-		AEE66794C4218DDE17BD316D /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603117508E4DD1D5E542C78A /* Color+Hex.swift */; };
-		B0651AD2D6599D00DFEF7C09 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C779356DEDB6B11EDA20F7 /* splash.png */; };
-		C1A8FBF4FE85C7AF5D5C23D0 /* WeightGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68E22363A58D508BD84C73B /* WeightGraphView.swift */; };
-		CFBAE38DCBA4067366B30F08 /* WeightReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8CBC67DEDA95BCF9C65C02C /* WeightReading.swift */; };
-		D5AB3DEA3A11F08C4D323B1B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FAC4705CBD32DAFD5FAFDC1 /* SettingsView.swift */; };
-		D6657AB895C6EFF2FD1E8A00 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFDCC6FC5021C9B4D0CBD38 /* ContentView.swift */; };
-		DDB6F9EA10D37102470BD397 /* WeightDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48EA2F2A422319FA8BE8C50 /* WeightDisplayView.swift */; };
-		EB9A0B185762D28452BCA0DE /* BookooProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A953FBB4306314B46728366 /* BookooProtocol.swift */; };
-		F12FE9446C599F92A42B8FDA /* DeviceDiscoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC464051363A6AB1F0CC34E /* DeviceDiscoveryView.swift */; };
-		F9B66FEE38C759807C59ADFE /* ScaleBLEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 756E5A8D20CBAE8497B80818 /* ScaleBLEController.swift */; };
+		03915640CA03236B321EDB41 /* ScaleReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA342A6EF04E937271D7F41A /* ScaleReading.swift */; };
+		0CE2A3344FEEB32D40F401E1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D024D79F8B3520E4B22480DD /* LaunchScreen.storyboard */; };
+		0E4AF2EF4BFA337D4DE8A119 /* WeightUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E8F1A89A193B8C953478941 /* WeightUnit.swift */; };
+		0F95DFE745072417AC994E8A /* BookooProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE19CC70B5405827D7C53E5 /* BookooProtocol.swift */; };
+		2001A268617AE7760B1637FB /* WeightDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89537E67CD35777534B63FC6 /* WeightDisplayView.swift */; };
+		26A5F089598987F1B15E94FB /* MockScaleProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7CF7D34A40424454CB9556 /* MockScaleProvider.swift */; };
+		2A3FF896B2E1BB0D754A9B47 /* BrewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AF9A8D52DB7F4225B0233F /* BrewTimerView.swift */; };
+		2C2EA38B59B0EDE440E5AE5A /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 16F6C06A984EEE8C3A00A36F /* splash.png */; };
+		310833E12E9EEC6FA6C92053 /* WeightGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E958576499A51EC94FA10A /* WeightGraphView.swift */; };
+		51AC2CF23C974922F5BD35C4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8982B49F12AAA80824A6E85F /* SettingsView.swift */; };
+		5D43AAF78A72799C4F18FE34 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3E1488C9DD0DFA92741A49 /* background.png */; };
+		6E394D86F87D623A0C536071 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */; };
+		6E5800D136A52C1CAC0E3452 /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */; };
+		7012EEA7BEC596FE48E49720 /* BrewTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */; };
+		8680C02F1F010B1241EAAE7F /* GraphPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */; };
+		8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */; };
+		961BF3F4C7FA7AAE413238D6 /* BrewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4244DC4350D1DF43708272 /* BrewStore.swift */; };
+		9821ACAE0A75D4AC7D6D04F9 /* SavedBrew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CD2266C63783DF14CAB984 /* SavedBrew.swift */; };
+		9B1B493CF8CB641B1D1DB717 /* DeviceDiscoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BDC61A32DFE1F3C066DA5BF /* DeviceDiscoveryView.swift */; };
+		B52B01049770DBB5605B6648 /* WeightReading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35D2E48789DD58EB95AB2F47 /* WeightReading.swift */; };
+		B5C75EF80BF6BFA82AB3D064 /* ScaleBLEController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171824277CC25F58BA9AC6F2 /* ScaleBLEController.swift */; };
+		B67E22E443A6B68E2CE2E2D0 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 530A8ACD02B4609AA88B1CF7 /* Color+Hex.swift */; };
+		C2ED035521943ADE27F24BB0 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 24EE99227C179609F074F6B2 /* icon.png */; };
+		D82BA595B93161ECFE3026BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBF18B1D507848F0C68ECDAA /* Assets.xcassets */; };
+		F19D9226EEB78BB9DA6DC93C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC4F25FFBE4AF4BE39DBA04 /* ContentView.swift */; };
+		FE4756FD3CCA41A28759BF97 /* BooBudApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4715CE90AFA987DAEF2D24 /* BooBudApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooBudApp.swift; sourceTree = "<group>"; };
-		0FAC4705CBD32DAFD5FAFDC1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		157973120A41547F653A72B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		2A953FBB4306314B46728366 /* BookooProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookooProtocol.swift; sourceTree = "<group>"; };
-		5A7AD887E8D26E90E5D9F6FE /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
-		5EC464051363A6AB1F0CC34E /* DeviceDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryView.swift; sourceTree = "<group>"; };
-		603117508E4DD1D5E542C78A /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
-		60B9E68C2366ECE5F5FCB400 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
-		6A8B9B7201B6DDFB7C5D5096 /* ScaleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleViewModel.swift; sourceTree = "<group>"; };
-		74857F4BBB353D1B2A266AB9 /* BrewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerView.swift; sourceTree = "<group>"; };
-		756E5A8D20CBAE8497B80818 /* ScaleBLEController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleBLEController.swift; sourceTree = "<group>"; };
-		8985AB58F1A75882313EF8F7 /* ScaleReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleReading.swift; sourceTree = "<group>"; };
-		8DFDCC6FC5021C9B4D0CBD38 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		90C779356DEDB6B11EDA20F7 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
-		926791E7D105AD9786204536 /* BrewTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerState.swift; sourceTree = "<group>"; };
-		928CEE6E057B992D347163DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C247D7C600AAFF57D58BEB89 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		D48EA2F2A422319FA8BE8C50 /* WeightDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightDisplayView.swift; sourceTree = "<group>"; };
-		E68E22363A58D508BD84C73B /* WeightGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightGraphView.swift; sourceTree = "<group>"; };
-		E89EF36C5C59731DD1DC6967 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
-		E8CBC67DEDA95BCF9C65C02C /* WeightReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightReading.swift; sourceTree = "<group>"; };
-		E92A83F2C70C397207E3D06C /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
+		15AF9A8D52DB7F4225B0233F /* BrewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerView.swift; sourceTree = "<group>"; };
+		16F6C06A984EEE8C3A00A36F /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
+		171824277CC25F58BA9AC6F2 /* ScaleBLEController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleBLEController.swift; sourceTree = "<group>"; };
+		1A3E1488C9DD0DFA92741A49 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		1DE19CC70B5405827D7C53E5 /* BookooProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookooProtocol.swift; sourceTree = "<group>"; };
+		24EE99227C179609F074F6B2 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		28CD2266C63783DF14CAB984 /* SavedBrew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedBrew.swift; sourceTree = "<group>"; };
+		35D2E48789DD58EB95AB2F47 /* WeightReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightReading.swift; sourceTree = "<group>"; };
+		3C4244DC4350D1DF43708272 /* BrewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewStore.swift; sourceTree = "<group>"; };
+		3CC4F25FFBE4AF4BE39DBA04 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerState.swift; sourceTree = "<group>"; };
+		530A8ACD02B4609AA88B1CF7 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		7E8F1A89A193B8C953478941 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
+		81E958576499A51EC94FA10A /* WeightGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightGraphView.swift; sourceTree = "<group>"; };
+		89537E67CD35777534B63FC6 /* WeightDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightDisplayView.swift; sourceTree = "<group>"; };
+		8982B49F12AAA80824A6E85F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8E4715CE90AFA987DAEF2D24 /* BooBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooBudApp.swift; sourceTree = "<group>"; };
+		9BDC61A32DFE1F3C066DA5BF /* DeviceDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryView.swift; sourceTree = "<group>"; };
+		AA342A6EF04E937271D7F41A /* ScaleReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleReading.swift; sourceTree = "<group>"; };
+		B5647C021CEFB9DF9B12393D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
+		CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleViewModel.swift; sourceTree = "<group>"; };
+		D024D79F8B3520E4B22480DD /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewHistoryView.swift; sourceTree = "<group>"; };
+		EE7CF7D34A40424454CB9556 /* MockScaleProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockScaleProvider.swift; sourceTree = "<group>"; };
+		F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphPoint.swift; sourceTree = "<group>"; };
 		FBA7C457AE0C02335D2E4E17 /* booBud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = booBud.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBF18B1D507848F0C68ECDAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		043ED543EF022C791F512246 /* booBud */ = {
+		08B1DFE9BDE21BEE779D6268 /* BLE */ = {
 			isa = PBXGroup;
 			children = (
-				928CEE6E057B992D347163DB /* Assets.xcassets */,
-				EF01FBBC46B3AA838AB31FCD /* App */,
-				5959268DF7C4C2B0B20B629D /* BLE */,
-				2228EB0379DE32482CD970B4 /* Models */,
-				6A90594D611BC7F4BB7B269A /* Resources */,
-				B3106A990BFBB22B1D9BB434 /* ViewModels */,
-				08EDD75522C67D37CA2B2F7C /* Views */,
-			);
-			path = booBud;
-			sourceTree = "<group>";
-		};
-		08EDD75522C67D37CA2B2F7C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				74857F4BBB353D1B2A266AB9 /* BrewTimerView.swift */,
-				8DFDCC6FC5021C9B4D0CBD38 /* ContentView.swift */,
-				E92A83F2C70C397207E3D06C /* ControlBarView.swift */,
-				5EC464051363A6AB1F0CC34E /* DeviceDiscoveryView.swift */,
-				0FAC4705CBD32DAFD5FAFDC1 /* SettingsView.swift */,
-				D48EA2F2A422319FA8BE8C50 /* WeightDisplayView.swift */,
-				E68E22363A58D508BD84C73B /* WeightGraphView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		2228EB0379DE32482CD970B4 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				926791E7D105AD9786204536 /* BrewTimerState.swift */,
-				8985AB58F1A75882313EF8F7 /* ScaleReading.swift */,
-				E8CBC67DEDA95BCF9C65C02C /* WeightReading.swift */,
-				60B9E68C2366ECE5F5FCB400 /* WeightUnit.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		5959268DF7C4C2B0B20B629D /* BLE */ = {
-			isa = PBXGroup;
-			children = (
-				2A953FBB4306314B46728366 /* BookooProtocol.swift */,
-				756E5A8D20CBAE8497B80818 /* ScaleBLEController.swift */,
+				1DE19CC70B5405827D7C53E5 /* BookooProtocol.swift */,
+				171824277CC25F58BA9AC6F2 /* ScaleBLEController.swift */,
 			);
 			path = BLE;
-			sourceTree = "<group>";
-		};
-		6A90594D611BC7F4BB7B269A /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5A7AD887E8D26E90E5D9F6FE /* background.png */,
-				E89EF36C5C59731DD1DC6967 /* icon.png */,
-				157973120A41547F653A72B1 /* Info.plist */,
-				C247D7C600AAFF57D58BEB89 /* LaunchScreen.storyboard */,
-				90C779356DEDB6B11EDA20F7 /* splash.png */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		89794CA74792CDC06D63E7AE /* Products */ = {
@@ -125,29 +84,85 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AF8E017C02B95857FAB49A5C = {
+		922548A62B177D16A9DDBB50 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				043ED543EF022C791F512246 /* booBud */,
-				89794CA74792CDC06D63E7AE /* Products */,
+				1A3E1488C9DD0DFA92741A49 /* background.png */,
+				24EE99227C179609F074F6B2 /* icon.png */,
+				B5647C021CEFB9DF9B12393D /* Info.plist */,
+				D024D79F8B3520E4B22480DD /* LaunchScreen.storyboard */,
+				16F6C06A984EEE8C3A00A36F /* splash.png */,
 			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
-		B3106A990BFBB22B1D9BB434 /* ViewModels */ = {
+		9D0E5578008CE692D6ED16F1 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				6A8B9B7201B6DDFB7C5D5096 /* ScaleViewModel.swift */,
+				CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		EF01FBBC46B3AA838AB31FCD /* App */ = {
+		9D9B248C3E07AE1CBF9694D8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0E663BAA0896D1B5F8D710B4 /* BooBudApp.swift */,
-				603117508E4DD1D5E542C78A /* Color+Hex.swift */,
+				D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */,
+				15AF9A8D52DB7F4225B0233F /* BrewTimerView.swift */,
+				3CC4F25FFBE4AF4BE39DBA04 /* ContentView.swift */,
+				C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */,
+				9BDC61A32DFE1F3C066DA5BF /* DeviceDiscoveryView.swift */,
+				8982B49F12AAA80824A6E85F /* SettingsView.swift */,
+				89537E67CD35777534B63FC6 /* WeightDisplayView.swift */,
+				81E958576499A51EC94FA10A /* WeightGraphView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A60E46B28A6BF6712852AC14 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3C4244DC4350D1DF43708272 /* BrewStore.swift */,
+				4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */,
+				F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */,
+				EE7CF7D34A40424454CB9556 /* MockScaleProvider.swift */,
+				28CD2266C63783DF14CAB984 /* SavedBrew.swift */,
+				AA342A6EF04E937271D7F41A /* ScaleReading.swift */,
+				35D2E48789DD58EB95AB2F47 /* WeightReading.swift */,
+				7E8F1A89A193B8C953478941 /* WeightUnit.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AF8E017C02B95857FAB49A5C = {
+			isa = PBXGroup;
+			children = (
+				F82FCD27838EC146E1351C0B /* booBud */,
+				89794CA74792CDC06D63E7AE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E30DD687DAAC35F551D8DCA3 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8E4715CE90AFA987DAEF2D24 /* BooBudApp.swift */,
+				530A8ACD02B4609AA88B1CF7 /* Color+Hex.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		F82FCD27838EC146E1351C0B /* booBud */ = {
+			isa = PBXGroup;
+			children = (
+				FBF18B1D507848F0C68ECDAA /* Assets.xcassets */,
+				E30DD687DAAC35F551D8DCA3 /* App */,
+				08B1DFE9BDE21BEE779D6268 /* BLE */,
+				A60E46B28A6BF6712852AC14 /* Models */,
+				922548A62B177D16A9DDBB50 /* Resources */,
+				9D0E5578008CE692D6ED16F1 /* ViewModels */,
+				9D9B248C3E07AE1CBF9694D8 /* Views */,
+			);
+			path = booBud;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -179,7 +194,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = 796063AC3C6D0A3600F24AEA /* Build configuration list for PBXProject "booBud" */;
 			developmentRegion = en;
@@ -205,11 +220,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				933B16E2A2651871AAD73842 /* Assets.xcassets in Resources */,
-				3F860C15D172B1A4EF608A24 /* LaunchScreen.storyboard in Resources */,
-				859A3C55173A609B637F0FFF /* background.png in Resources */,
-				8963695131007AF40DD75F30 /* icon.png in Resources */,
-				B0651AD2D6599D00DFEF7C09 /* splash.png in Resources */,
+				D82BA595B93161ECFE3026BC /* Assets.xcassets in Resources */,
+				0CE2A3344FEEB32D40F401E1 /* LaunchScreen.storyboard in Resources */,
+				5D43AAF78A72799C4F18FE34 /* background.png in Resources */,
+				C2ED035521943ADE27F24BB0 /* icon.png in Resources */,
+				2C2EA38B59B0EDE440E5AE5A /* splash.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,22 +257,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04FF972756ACD993E4A31847 /* BooBudApp.swift in Sources */,
-				EB9A0B185762D28452BCA0DE /* BookooProtocol.swift in Sources */,
-				4B43B00770EAFD9F8787285E /* BrewTimerState.swift in Sources */,
-				A23774187790F944A172A154 /* BrewTimerView.swift in Sources */,
-				AEE66794C4218DDE17BD316D /* Color+Hex.swift in Sources */,
-				D6657AB895C6EFF2FD1E8A00 /* ContentView.swift in Sources */,
-				0C849B0C4874D59E093D0588 /* ControlBarView.swift in Sources */,
-				F12FE9446C599F92A42B8FDA /* DeviceDiscoveryView.swift in Sources */,
-				F9B66FEE38C759807C59ADFE /* ScaleBLEController.swift in Sources */,
-				0FDE97C6A89E6E809E423D95 /* ScaleReading.swift in Sources */,
-				3088F87598DD717552767F91 /* ScaleViewModel.swift in Sources */,
-				D5AB3DEA3A11F08C4D323B1B /* SettingsView.swift in Sources */,
-				DDB6F9EA10D37102470BD397 /* WeightDisplayView.swift in Sources */,
-				C1A8FBF4FE85C7AF5D5C23D0 /* WeightGraphView.swift in Sources */,
-				CFBAE38DCBA4067366B30F08 /* WeightReading.swift in Sources */,
-				425FBBF7A3216ABC24FA2727 /* WeightUnit.swift in Sources */,
+				FE4756FD3CCA41A28759BF97 /* BooBudApp.swift in Sources */,
+				0F95DFE745072417AC994E8A /* BookooProtocol.swift in Sources */,
+				8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */,
+				961BF3F4C7FA7AAE413238D6 /* BrewStore.swift in Sources */,
+				7012EEA7BEC596FE48E49720 /* BrewTimerState.swift in Sources */,
+				2A3FF896B2E1BB0D754A9B47 /* BrewTimerView.swift in Sources */,
+				B67E22E443A6B68E2CE2E2D0 /* Color+Hex.swift in Sources */,
+				F19D9226EEB78BB9DA6DC93C /* ContentView.swift in Sources */,
+				6E394D86F87D623A0C536071 /* ControlBarView.swift in Sources */,
+				9B1B493CF8CB641B1D1DB717 /* DeviceDiscoveryView.swift in Sources */,
+				8680C02F1F010B1241EAAE7F /* GraphPoint.swift in Sources */,
+				26A5F089598987F1B15E94FB /* MockScaleProvider.swift in Sources */,
+				9821ACAE0A75D4AC7D6D04F9 /* SavedBrew.swift in Sources */,
+				B5C75EF80BF6BFA82AB3D064 /* ScaleBLEController.swift in Sources */,
+				03915640CA03236B321EDB41 /* ScaleReading.swift in Sources */,
+				6E5800D136A52C1CAC0E3452 /* ScaleViewModel.swift in Sources */,
+				51AC2CF23C974922F5BD35C4 /* SettingsView.swift in Sources */,
+				2001A268617AE7760B1637FB /* WeightDisplayView.swift in Sources */,
+				310833E12E9EEC6FA6C92053 /* WeightGraphView.swift in Sources */,
+				B52B01049770DBB5605B6648 /* WeightReading.swift in Sources */,
+				0E4AF2EF4BFA337D4DE8A119 /* WeightUnit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,7 +300,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boobud.app;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -300,7 +320,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boobud.app;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -341,7 +361,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -398,7 +417,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
