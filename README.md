@@ -1,6 +1,6 @@
 # booBud ☕ Simple is good.
 
-The apps I found for the Bookoo scale were overcomplicated and awkward to use. I wanted something simple. So this is it — a straightforward iOS companion for your **Bookoo Mini Scale**: real-time weight, a brew timer, and tare controls over Bluetooth. Nothing more, nothing less.
+The apps I found for the Bookoo scale were overcomplicated and awkward to use. I wanted something simple. So this is it — a straightforward iOS companion for your **Bookoo Mini Scale**: real-time weight, a brew timer, and tare controls over Bluetooth. Nothing more, nothing less. _(Admittedly, it's grown a bit — brew history, flow graphs, bean dose tracking — but it's still simple to use.)_
 
 ## Features
 
