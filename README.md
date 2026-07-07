@@ -8,8 +8,16 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 - **Live weight display** — grams or ounces, large readable digits
 - **Brew timer** — start/stop/reset with 0.1s precision, or auto-start on pour detection
 - **Tare & Brew button** — one tap to zero the scale and start the timer
-- **Auto-detect pour** — optionally auto-starts the timer when weight crosses 0.1g
+- **Auto-detect pour** — optionally auto-starts the timer when weight crosses a configurable threshold
+- **Real-time graph** — dual-axis chart of weight (g) and flow rate (g/s) over time
+- **Flow-stop detection** — vertical dashed line + label marking when flow drops below threshold
+- **Peak weight annotation** — horizontal dashed line at the maximum weight reached
+- **Brew saving** — save each brew with auto-generated stats (duration, final weight, peak weight, peak flow)
+- **Bean weight & grind setting** — stepper controls (step 0.1), last-used values retained for next brew
+- **Brew history** — scrollable list with thumbnail charts, editable name/note/bean/grind, swipe to delete
+- **Underlay comparison** — overlay a past brew's graph as dashed ghost lines behind the live data
 - **Battery level** from the scale with low-battery color warnings (yellow ≤20%, red ≤10%)
+- **Settings** — pour trigger threshold, flow axis auto-range or fixed max, flow-stop detection threshold
 - **ScaleSimulator** — companion macOS app that simulates a Bookoo scale for testing
 
 ## Screenshots
@@ -49,11 +57,12 @@ booBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using t
 booBud/
 ├── App/              # @main app entry
 ├── BLE/              # BookooProtocol + ScaleBLEController
-├── Models/           # WeightReading, WeightUnit, BrewTimerState
+├── Models/           # WeightReading, WeightUnit, BrewTimerState, GraphPoint, SavedBrew, BrewStore
 ├── ViewModels/       # ScaleViewModel (@Observable state)
-├── Views/            # ContentView, WeightDisplay, BrewTimer, Controls, DeviceDiscovery, Settings
+├── Views/            # ContentView, WeightDisplay, BrewTimer, Controls, DeviceDiscovery, Settings, BrewHistory, BrewThumbnail, BrewEditSheet
 ├── Resources/        # Info.plist (BLE permissions)
-└── Assets.xcassets/  # App icon, accent color
+├── Assets.xcassets/  # App icon, accent color
+└── scripts/          # bump-build-number.sh (auto-increment build number)
 
 ScaleSimulator/
 └── ScaleSimulator/   # macOS BLE peripheral companion — simulates a Bookoo scale for testing
