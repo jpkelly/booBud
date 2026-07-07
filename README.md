@@ -14,9 +14,9 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 
 ## Screenshots
 
-| Weight Display | Splash Screen |
-|---------------|---------------|
-| <img src="Screenshot.png" alt="booBud weight display" width="240" /> | <img src="SplashScreen.png" alt="booBud splash screen" width="240" /> |
+| Weight Display | Brews | Splash Screen |
+|---------------|-------|---------------|
+| <img src="Screenshot.png" alt="booBud weight display" width="240" /> | <img src="Brews.png" alt="booBud brews sheet" width="240" /> | <img src="SplashScreen.png" alt="booBud splash screen" width="240" /> |
 
 ## Requirements
 

@@ -25,14 +25,20 @@ final class BrewStore {
         note: String = "",
         weightPoints: [GraphPoint],
         flowPoints: [GraphPoint],
-        displayUnit: WeightUnit
+        displayUnit: WeightUnit,
+        beanWeight: Double = 18.0,
+        grindSetting: Double = 2.0,
+        flowStoppedAt: Double? = nil
     ) {
         let brew = SavedBrew(
             name: name,
             note: note,
             weightPoints: weightPoints,
             flowPoints: flowPoints,
-            displayUnit: displayUnit
+            displayUnit: displayUnit,
+            beanWeight: beanWeight,
+            grindSetting: grindSetting,
+            flowStoppedAt: flowStoppedAt
         )
         brews.insert(brew, at: 0)
         persist()
@@ -47,10 +53,12 @@ final class BrewStore {
     }
 
     /// Rename or update the note for an existing brew.
-    func update(_ brew: SavedBrew, name: String? = nil, note: String? = nil) {
+    func update(_ brew: SavedBrew, name: String? = nil, note: String? = nil, beanWeight: Double? = nil, grindSetting: Double? = nil) {
         guard let idx = brews.firstIndex(where: { $0.id == brew.id }) else { return }
         if let name { brews[idx].name = name }
         if let note { brews[idx].note = note }
+        if let beanWeight { brews[idx].beanWeight = beanWeight }
+        if let grindSetting { brews[idx].grindSetting = grindSetting }
         persist()
     }
 

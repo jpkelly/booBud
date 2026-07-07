@@ -16,4 +16,7 @@ extension Color {
         }
         self.init(red: r, green: g, blue: b)
     }
+
+    /// Warm tan — used throughout the app for secondary text on dark backgrounds.
+    static let warmSecondary = Color(hex: "B8A898")
 }

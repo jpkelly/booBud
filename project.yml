@@ -19,11 +19,13 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.boobud.app
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.3"
+        CURRENT_PROJECT_VERSION: "4"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: booBud/Resources/Info.plist
+        DEVELOPMENT_TEAM: 4QRU3PRZC6
+        CODE_SIGN_STYLE: Automatic
     preBuildScripts:
       - name: "SwiftLint"
         script: |
@@ -33,3 +35,14 @@ targets:
         basedOnDependencyAnalysis: false
         inputFiles: []
         outputFiles: []
+
+schemes:
+  booBud:
+    build:
+      targets:
+        booBud: all
+      preActions:
+        - name: "Bump Build Number"
+          script: |
+            ${SRCROOT}/scripts/bump-build-number.sh
+          settingsTarget: booBud

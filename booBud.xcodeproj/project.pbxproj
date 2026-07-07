@@ -21,6 +21,7 @@
 		6E394D86F87D623A0C536071 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */; };
 		6E5800D136A52C1CAC0E3452 /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */; };
 		7012EEA7BEC596FE48E49720 /* BrewTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */; };
+		7778D3719AC6FCAC2DECE824 /* BrewThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423882FD314CD6D322F4D055 /* BrewThumbnailView.swift */; };
 		8680C02F1F010B1241EAAE7F /* GraphPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */; };
 		8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */; };
 		961BF3F4C7FA7AAE413238D6 /* BrewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4244DC4350D1DF43708272 /* BrewStore.swift */; };
@@ -46,6 +47,7 @@
 		35D2E48789DD58EB95AB2F47 /* WeightReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightReading.swift; sourceTree = "<group>"; };
 		3C4244DC4350D1DF43708272 /* BrewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewStore.swift; sourceTree = "<group>"; };
 		3CC4F25FFBE4AF4BE39DBA04 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		423882FD314CD6D322F4D055 /* BrewThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewThumbnailView.swift; sourceTree = "<group>"; };
 		4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewTimerState.swift; sourceTree = "<group>"; };
 		530A8ACD02B4609AA88B1CF7 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		7E8F1A89A193B8C953478941 /* WeightUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightUnit.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */,
+				423882FD314CD6D322F4D055 /* BrewThumbnailView.swift */,
 				15AF9A8D52DB7F4225B0233F /* BrewTimerView.swift */,
 				3CC4F25FFBE4AF4BE39DBA04 /* ContentView.swift */,
 				C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */,
@@ -194,7 +197,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					819D635AD30C267BEA585E6E = {
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 796063AC3C6D0A3600F24AEA /* Build configuration list for PBXProject "booBud" */;
 			developmentRegion = en;
@@ -261,6 +269,7 @@
 				0F95DFE745072417AC994E8A /* BookooProtocol.swift in Sources */,
 				8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */,
 				961BF3F4C7FA7AAE413238D6 /* BrewStore.swift in Sources */,
+				7778D3719AC6FCAC2DECE824 /* BrewThumbnailView.swift in Sources */,
 				7012EEA7BEC596FE48E49720 /* BrewTimerState.swift in Sources */,
 				2A3FF896B2E1BB0D754A9B47 /* BrewTimerView.swift in Sources */,
 				B67E22E443A6B68E2CE2E2D0 /* Color+Hex.swift in Sources */,
@@ -289,7 +298,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = booBud/Resources/Info.plist;
@@ -297,7 +307,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boobud.app;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -309,7 +319,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = UFWV49P4TN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = booBud/Resources/Info.plist;
@@ -317,7 +328,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.boobud.app;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -361,6 +372,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -417,6 +429,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;

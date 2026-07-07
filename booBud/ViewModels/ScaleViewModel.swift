@@ -104,6 +104,51 @@ final class ScaleViewModel {
         didSet { UserDefaults.standard.set(flowMax, forKey: "flowMax") }
     }
 
+    /// Last-used bean dose weight (grams), retained across brews. Persisted to UserDefaults.
+    var lastBeanWeight: Double = {
+        let val = UserDefaults.standard.double(forKey: "lastBeanWeight")
+        return val > 0 ? val : 18.0
+    }() {
+        didSet { UserDefaults.standard.set(lastBeanWeight, forKey: "lastBeanWeight") }
+    }
+
+    /// Last-used grinder setting, retained across brews. Persisted to UserDefaults.
+    var lastGrindSetting: Double = {
+        let val = UserDefaults.standard.double(forKey: "lastGrindSetting")
+        return val > 0 ? val : 2.0
+    }() {
+        didSet { UserDefaults.standard.set(lastGrindSetting, forKey: "lastGrindSetting") }
+    }
+
+    /// Flow-stop detection — persisted toggle.
+    var flowStopDetectionEnabled: Bool = {
+        if UserDefaults.standard.object(forKey: "flowStopDetectionEnabled") == nil {
+            return true
+        }
+        return UserDefaults.standard.bool(forKey: "flowStopDetectionEnabled")
+    }() {
+        didSet { UserDefaults.standard.set(flowStopDetectionEnabled, forKey: "flowStopDetectionEnabled") }
+    }
+
+    /// Flow rate below which flow is considered "stopped" (g/s).
+    var flowStopThreshold: Double = {
+        let val = UserDefaults.standard.double(forKey: "flowStopThreshold")
+        return val > 0 ? val : 0.3
+    }() {
+        didSet { UserDefaults.standard.set(flowStopThreshold, forKey: "flowStopThreshold") }
+    }
+
+    /// Brew-elapsed time when flow was confirmed stopped; nil until detection fires.
+    var flowStoppedAt: Double?
+
+    /// Whether the flow-stop status chip has been dismissed by the user.
+    var hideFlowStopChip: Bool = false
+
+    /// Internal: brew-elapsed time when flow first dropped below threshold (debounce start).
+    private var flowBelowThresholdSince: Double?
+    /// Internal: whether flow has peaked above 0.5 g/s this session (pour has actually started).
+    private var flowHasBeenActive: Bool = false
+
     /// Scale operating mode — persisted to UserDefaults for reference.
     var scaleMode: BookooProtocol.ScaleMode = {
         let raw = UserDefaults.standard.integer(forKey: "scaleMode")
@@ -266,6 +311,9 @@ final class ScaleViewModel {
         bleController.sendTareAndStartTimer()
         currentReading = nil
         brewTimer.reset()
+        flowStoppedAt = nil
+        flowBelowThresholdSince = nil
+        flowHasBeenActive = false
         brewTimer.startOrResume()
         startDisplayTimer()
     }
@@ -286,6 +334,10 @@ final class ScaleViewModel {
         brewTimer.reset()
         weightHistory.removeAll()
         flowRateHistory.removeAll()
+        flowStoppedAt = nil
+        hideFlowStopChip = false
+        flowBelowThresholdSince = nil
+        flowHasBeenActive = false
         stopDisplayTimer()
         bleController.sendResetTimer()
     }
@@ -315,6 +367,29 @@ final class ScaleViewModel {
                     self.brewTimer.stop()
                     self.stopDisplayTimer()
                     self.bleController.sendStopTimer()
+                }
+
+                // Flow-stop detection (only fire once per brew, after weight > 5g and flow has been active)
+                if self.flowStopDetectionEnabled && self.flowStoppedAt == nil {
+                    let maxWeight = self.weightHistory.map(\.weight).max() ?? 0
+                    if maxWeight > 5.0 {
+                        let currentFlow = self.currentReading?.flowRate ?? 0
+                        // Gate: require flow has peaked above 0.5 g/s (pour has actually started)
+                        if currentFlow > 0.5 { self.flowHasBeenActive = true }
+                        if self.flowHasBeenActive {
+                            if currentFlow < self.flowStopThreshold {
+                                if let since = self.flowBelowThresholdSince {
+                                    if self.brewTimer.elapsed - since >= 1.0 {
+                                        self.flowStoppedAt = since
+                                    }
+                                } else {
+                                    self.flowBelowThresholdSince = self.brewTimer.elapsed
+                                }
+                            } else {
+                                self.flowBelowThresholdSince = nil
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -349,6 +424,9 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
                newReading.grams >= threshold,
                self.lastAutoStartWeight < threshold {
                 self.brewTimer.reset()
+                self.flowStoppedAt = nil
+                self.flowBelowThresholdSince = nil
+                self.flowHasBeenActive = false
                 self.brewTimer.startOrResume()
                 self.startDisplayTimer()
             }
@@ -380,6 +458,9 @@ extension ScaleViewModel: ScaleBLEControllerDelegate {
                 self.currentReading = nil
                 self.batteryPercent = 0
                 self.brewTimer.reset()
+                self.flowStoppedAt = nil
+                self.flowBelowThresholdSince = nil
+                self.flowHasBeenActive = false
             }
         }
     }

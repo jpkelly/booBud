@@ -38,50 +38,30 @@ struct ContentView: View {
                 BrewTimerView(viewModel: viewModel)
 
                 VStack(spacing: 4) {
-                    if viewModel.graphOverlayIndicators {
-                        // Overlay mode: indicators float over the graph — no layout shift
-                        ZStack(alignment: .top) {
-                            WeightGraphView(
-                                data: graphWeightData,
-                                flowData: graphFlowData,
-                                displayUnit: recalledBrew?.displayUnit ?? viewModel.displayUnit,
-                                flowAutoRange: viewModel.flowAutoRange,
-                                flowMax: viewModel.flowMax,
-                                underlayWeight: viewModel.underlayBrew?.weightPoints.asWeightTuples ?? [],
-                                underlayFlow: viewModel.underlayBrew?.flowPoints.asFlowTuples ?? []
-                            )
-                                .frame(height: 200)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    showBrewHistory = true
-                                }
-
+                    WeightGraphView(
+                        data: graphWeightData,
+                        flowData: graphFlowData,
+                        displayUnit: recalledBrew?.displayUnit ?? viewModel.displayUnit,
+                        flowAutoRange: viewModel.flowAutoRange,
+                        flowMax: viewModel.flowMax,
+                        underlayWeight: viewModel.underlayBrew?.weightPoints.asWeightTuples ?? [],
+                        underlayFlow: viewModel.underlayBrew?.flowPoints.asFlowTuples ?? [],
+                        flowStoppedAt: effectiveFlowStoppedAt,
+                        peakWeight: effectivePeakWeight,
+                        underlayBeanWeight: viewModel.underlayBrew?.beanWeight,
+                        underlayGrindSetting: viewModel.underlayBrew?.grindSetting
+                    )
+                        .frame(height: 200)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            showBrewHistory = true
+                        }
+                        .overlay(alignment: .top) {
                             if hasStatusIndicators {
                                 statusOverlayContent
-                                    .padding(.top, 4)
+                                    .offset(y: -28)
                             }
                         }
-                    } else {
-                        // Legacy mode: indicators stack above — graph shifts down
-                        if hasStatusIndicators {
-                            statusOverlayContent
-                        }
-
-                        WeightGraphView(
-                            data: graphWeightData,
-                            flowData: graphFlowData,
-                            displayUnit: recalledBrew?.displayUnit ?? viewModel.displayUnit,
-                            flowAutoRange: viewModel.flowAutoRange,
-                            flowMax: viewModel.flowMax,
-                            underlayWeight: viewModel.underlayBrew?.weightPoints.asWeightTuples ?? [],
-                            underlayFlow: viewModel.underlayBrew?.flowPoints.asFlowTuples ?? []
-                        )
-                            .frame(height: 200)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                showBrewHistory = true
-                            }
-                    }
                 }
                 .padding(.leading, 4)
                 .padding(.trailing, 4)
@@ -237,11 +217,36 @@ struct ContentView: View {
         return viewModel.flowRateHistory
     }
 
+    /// Flow-stop time to annotate on the graph.
+    /// Only applies when weight has exceeded 5g (prevents false triggers at pour start).
+    /// - Live pour: from the running detection in the view model
+    /// - Recalled brew: stored value if available, otherwise computed post-hoc from flowPoints
+    private var effectiveFlowStoppedAt: Double? {
+        if let brew = recalledBrew {
+            let hasSubstantialWeight = brew.weightPoints.contains { $0.value > 5.0 }
+            guard hasSubstantialWeight else { return nil }
+            return brew.flowStoppedAt ?? brew.flowPoints.computeFlowStoppedAt(threshold: viewModel.flowStopThreshold)
+        }
+        let maxWeight = viewModel.weightHistory.map(\.weight).max() ?? 0
+        guard maxWeight > 5.0 else { return nil }
+        return viewModel.flowStoppedAt
+    }
+
+    /// Peak weight to annotate with a horizontal dashed line on the graph.
+    /// - Recalled brew: max from the brew's weight points
+    /// - Live pour: max from live weight history
+    /// Returns nil when there is no data.
+    private var effectivePeakWeight: Double? {
+        let maxW = graphWeightData.map(\.weight).max() ?? 0
+        return maxW > 0 ? maxW : nil
+    }
+
     // MARK: - Status indicators (recall + underlay, sized to match graph legend)
 
     /// Whether any status indicator is currently visible.
     private var hasStatusIndicators: Bool {
-        recalledBrew != nil || (viewModel.underlayBrew != nil && !viewModel.hideUnderlayChip)
+        recalledBrew != nil
+            || (viewModel.underlayBrew != nil && !viewModel.hideUnderlayChip)
     }
 
     /// Unified chip row — floats over the graph in overlay mode, stacks above in legacy mode.
@@ -266,18 +271,44 @@ struct ContentView: View {
                 recalledBrew = nil
             }
         } label: {
-            HStack(spacing: 3) {
+            HStack(spacing: 6) {
                 Image(systemName: "clock.arrow.circlepath")
                     .font(.system(size: 9))
-                Text("Viewing: \(recalledBrew?.name ?? "Saved Brew")")
-                    .font(.system(size: 9))
-                Text("· Back")
-                    .font(.system(size: 9))
-                    .underline()
+                if let brew = recalledBrew {
+                    Text(brew.date.formatted(.dateTime.month(.abbreviated).day(.twoDigits).hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)))
+                        .font(.system(size: 9))
+                    Text("·")
+                        .font(.system(size: 9))
+                        .opacity(0.6)
+                    HStack(spacing: 3) {
+                        Image(systemName: "scalemass.fill")
+                            .font(.system(size: 8))
+                        Text(String(format: "%.1fg", brew.beanWeight))
+                            .font(.system(size: 9))
+                    }
+                    Text("·")
+                        .font(.system(size: 9))
+                        .opacity(0.6)
+                    HStack(spacing: 3) {
+                        Image(systemName: "dial.medium.fill")
+                            .font(.system(size: 8))
+                            .scaleEffect(1.3)
+                        Text(String(format: "%.1f", brew.grindSetting))
+                            .font(.system(size: 9))
+                    }
+                    if !brew.note.isEmpty {
+                        Text("·")
+                            .font(.system(size: 9))
+                            .opacity(0.6)
+                        Text(brew.note)
+                            .font(.system(size: 9))
+                            .lineLimit(1)
+                    }
+                }
                 Image(systemName: "xmark")
                     .font(.system(size: 8))
             }
-            .foregroundStyle(.cyan.opacity(0.9))
+            .foregroundStyle(Color.warmSecondary)
             .padding(.vertical, 3)
             .padding(.horizontal, 6)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 5))

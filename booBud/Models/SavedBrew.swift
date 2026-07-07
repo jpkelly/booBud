@@ -10,6 +10,16 @@ struct SavedBrew: Codable, Identifiable, Equatable {
     let flowPoints: [GraphPoint]
     let displayUnitRaw: String
 
+    /// Bean dose weight in grams entered by the user. Defaults to 18.0 for legacy brews.
+    var beanWeight: Double
+
+    /// Grinder setting entered by the user. Defaults to 2.0 for legacy brews.
+    var grindSetting: Double
+
+    /// Brew-elapsed time when flow was detected as stopped. Nil for brews saved
+    /// before this feature existed; can be computed post-hoc from flowPoints.
+    let flowStoppedAt: Double?
+
     // MARK: - Computed stats
 
     /// Total brew duration in seconds (from the last data point).
@@ -48,7 +58,10 @@ struct SavedBrew: Codable, Identifiable, Equatable {
         note: String = "",
         weightPoints: [GraphPoint],
         flowPoints: [GraphPoint],
-        displayUnit: WeightUnit
+        displayUnit: WeightUnit,
+        beanWeight: Double = 18.0,
+        grindSetting: Double = 2.0,
+        flowStoppedAt: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -57,5 +70,29 @@ struct SavedBrew: Codable, Identifiable, Equatable {
         self.weightPoints = weightPoints
         self.flowPoints = flowPoints
         self.displayUnitRaw = displayUnit.rawValue
+        self.beanWeight = beanWeight
+        self.grindSetting = grindSetting
+        self.flowStoppedAt = flowStoppedAt
+    }
+
+    // MARK: - Codable (backward-compatible)
+
+    private enum CodingKeys: String, CodingKey {
+        case id, date, name, note, weightPoints, flowPoints, displayUnitRaw
+        case beanWeight, grindSetting, flowStoppedAt
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(UUID.self, forKey: .id)
+        date = try c.decode(Date.self, forKey: .date)
+        name = try c.decode(String.self, forKey: .name)
+        note = try c.decode(String.self, forKey: .note)
+        weightPoints = try c.decode([GraphPoint].self, forKey: .weightPoints)
+        flowPoints = try c.decode([GraphPoint].self, forKey: .flowPoints)
+        displayUnitRaw = try c.decode(String.self, forKey: .displayUnitRaw)
+        beanWeight = try c.decodeIfPresent(Double.self, forKey: .beanWeight) ?? 18.0
+        grindSetting = try c.decodeIfPresent(Double.self, forKey: .grindSetting) ?? 2.0
+        flowStoppedAt = try c.decodeIfPresent(Double.self, forKey: .flowStoppedAt)
     }
 }
