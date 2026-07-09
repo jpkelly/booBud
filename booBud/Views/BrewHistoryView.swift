@@ -83,7 +83,7 @@ struct BrewHistoryView: View {
             }
             .padding(.vertical, 4)
 
-            beanGrindRow(beanWeight: $beanWeight, grindSetting: $grindSetting)
+            beanGrindRow(beanWeight: $beanWeight, grindSetting: $grindSetting, grindStep: viewModel.grindStep)
 
             TextField("Name", text: $brewName)
                 .font(.body)
@@ -249,7 +249,7 @@ struct BrewHistoryView: View {
                         .font(.caption2)
                         .foregroundStyle(Color.warmSecondary.opacity(0.6))
                         .scaleEffect(1.3)
-                    Text(String(format: "%.1f", brew.grindSetting))
+                    Text(grindString(brew.grindSetting))
                         .font(.caption)
                         .foregroundStyle(Color.warmSecondary)
                     if !brew.note.isEmpty {
@@ -400,7 +400,7 @@ struct BrewEditSheet: View {
                     TextField("Name", text: $editName)
                         .font(.body)
 
-                    beanGrindRow(beanWeight: $editBeanWeight, grindSetting: $editGrindSetting)
+                    beanGrindRow(beanWeight: $editBeanWeight, grindSetting: $editGrindSetting, grindStep: viewModel.grindStep)
 
                     HStack {
                         TextField("Note (optional)", text: $editNote, axis: .vertical)
@@ -458,12 +458,13 @@ struct BrewEditSheet: View {
     }
 }
 
-// MARK: - Shared bean weight + grind stepper rows
+// MARK: - Shared bean weight + grind rows (editable text + native Stepper)
 
-/// Bean weight + grind stepper rows, shared by the save section and edit sheet.
+/// Bean weight and grind setting rows with direct text entry + native Stepper +/- buttons.
+/// Shared by the save section and edit sheet.
 @MainActor
 @ViewBuilder
-fileprivate func beanGrindRow(beanWeight: Binding<Double>, grindSetting: Binding<Double>) -> some View {
+fileprivate func beanGrindRow(beanWeight: Binding<Double>, grindSetting: Binding<Double>, grindStep: Double) -> some View {
     Stepper(value: beanWeight, in: 0...100, step: 0.1) {
         HStack(spacing: 6) {
             Image(systemName: "scalemass.fill")
@@ -472,12 +473,18 @@ fileprivate func beanGrindRow(beanWeight: Binding<Double>, grindSetting: Binding
             Text("Bean weight")
                 .font(.callout)
             Spacer(minLength: 8)
-            Text(String(format: "%.1f g", beanWeight.wrappedValue))
+            TextField("", value: beanWeight, format: .number.precision(.fractionLength(1)))
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .frame(width: 56)
                 .font(.callout.weight(.medium))
                 .foregroundStyle(.orange)
+            Text("g")
+                .font(.callout)
+                .foregroundStyle(.secondary)
         }
     }
-    Stepper(value: grindSetting, in: 0...100, step: 0.1) {
+    Stepper(value: grindSetting, in: 0...100, step: grindStep) {
         HStack(spacing: 6) {
             Image(systemName: "dial.medium.fill")
                 .font(.caption)
@@ -486,7 +493,10 @@ fileprivate func beanGrindRow(beanWeight: Binding<Double>, grindSetting: Binding
             Text("Grind")
                 .font(.callout)
             Spacer(minLength: 8)
-            Text(String(format: "%.1f", grindSetting.wrappedValue))
+            TextField("", value: grindSetting, format: .number.precision(.fractionLength(1...2)))
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .frame(width: 56)
                 .font(.callout.weight(.medium))
                 .foregroundStyle(.orange)
         }

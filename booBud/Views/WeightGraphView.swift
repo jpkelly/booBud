@@ -221,26 +221,31 @@ struct WeightGraphView: View {
                 if let bw = underlayBeanWeight, let gs = underlayGrindSetting,
                    !underlayWeight.isEmpty {
                     HStack(spacing: 4) {
-                        Text("Ref. Brew:")
+                        Text("Ref:")
                             .font(.system(size: 9))
                             .foregroundStyle(Color.warmSecondary)
-                        HStack(spacing: 2) {
-                            Image(systemName: "scalemass.fill")
-                                .font(.system(size: 8))
-                                .foregroundStyle(Color.warmSecondary)
-                            Text(String(format: "%.1fg", bw))
-                                .font(.system(size: 9))
-                                .foregroundStyle(Color.warmSecondary)
-                        }
-                        HStack(spacing: 2) {
-                            Image(systemName: "dial.medium.fill")
-                                .font(.system(size: 8))
-                                .foregroundStyle(Color.warmSecondary)
-                                .scaleEffect(1.3)
-                            Text(String(format: "%.1f", gs))
-                                .font(.system(size: 9))
-                                .foregroundStyle(Color.warmSecondary)
-                        }
+                        Image(systemName: "scalemass.fill")
+                            .font(.system(size: 8))
+                            .foregroundStyle(Color.warmSecondary)
+                        Text("Beans")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.warmSecondary)
+                        Text(String(format: "%.1fg", bw))
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.warmSecondary)
+                        Text("·")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.warmSecondary.opacity(0.5))
+                        Image(systemName: "dial.medium.fill")
+                            .font(.system(size: 8))
+                            .foregroundStyle(Color.warmSecondary)
+                            .scaleEffect(1.3)
+                        Text("Grind")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.warmSecondary)
+                        Text(grindString(gs))
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.warmSecondary)
                     }
                 }
                 Spacer()

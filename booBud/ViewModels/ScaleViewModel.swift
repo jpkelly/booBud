@@ -120,6 +120,14 @@ final class ScaleViewModel {
         didSet { UserDefaults.standard.set(lastGrindSetting, forKey: "lastGrindSetting") }
     }
 
+    /// Step increment for the grind setting stepper. Persisted to UserDefaults.
+    var grindStep: Double = {
+        let val = UserDefaults.standard.double(forKey: "grindStep")
+        return val > 0 ? val : 0.05
+    }() {
+        didSet { UserDefaults.standard.set(grindStep, forKey: "grindStep") }
+    }
+
     /// Flow-stop detection — persisted toggle.
     var flowStopDetectionEnabled: Bool = {
         if UserDefaults.standard.object(forKey: "flowStopDetectionEnabled") == nil {

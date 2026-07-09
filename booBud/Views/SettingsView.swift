@@ -64,6 +64,23 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Brew Logging") {
+                    HStack {
+                        Text("Grind step")
+                        Spacer()
+                        Picker("Grind step", selection: $viewModel.grindStep) {
+                            Text("0.05").tag(0.05)
+                            Text("0.1").tag(0.1)
+                            Text("0.25").tag(0.25)
+                            Text("0.5").tag(0.5)
+                            Text("1.0").tag(1.0)
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                        .frame(maxWidth: 220)
+                    }
+                }
+
                 Section("Graph") {
                     Toggle("Flow Auto Range", isOn: $viewModel.flowAutoRange)
                     if !viewModel.flowAutoRange {

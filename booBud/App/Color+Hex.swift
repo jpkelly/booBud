@@ -20,3 +20,14 @@ extension Color {
     /// Warm tan — used throughout the app for secondary text on dark backgrounds.
     static let warmSecondary = Color(hex: "B8A898")
 }
+
+// MARK: - Shared Formatters
+
+/// Format a grind setting value: always shows 1 decimal place,
+/// shows 2 decimal places only when the hundredths digit is non-zero.
+func grindString(_ value: Double) -> String {
+    let formatter = NumberFormatter()
+    formatter.minimumFractionDigits = 1
+    formatter.maximumFractionDigits = 2
+    return formatter.string(from: NSNumber(value: value)) ?? String(format: "%.1f", value)
+}

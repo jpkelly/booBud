@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Main container view — weight display + controls + device picker.
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel = ScaleViewModel()
     @State private var showDevicePicker = false
     @State private var showSettings = false
@@ -103,6 +104,9 @@ struct ContentView: View {
             if case .connected = newState {
                 dismissSplash()
             }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            UIApplication.shared.isIdleTimerDisabled = (newPhase == .active)
         }
     }
 
@@ -293,7 +297,7 @@ struct ContentView: View {
                         Image(systemName: "dial.medium.fill")
                             .font(.system(size: 8))
                             .scaleEffect(1.3)
-                        Text(String(format: "%.1f", brew.grindSetting))
+                        Text(grindString(brew.grindSetting))
                             .font(.system(size: 9))
                     }
                     if !brew.note.isEmpty {
