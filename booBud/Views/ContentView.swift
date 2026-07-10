@@ -1,7 +1,13 @@
 import SwiftUI
+import OSLog
 
 /// Main container view — weight display + controls + device picker.
 struct ContentView: View {
+    private static let lifecycleLogger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.boobud.app",
+        category: "lifecycle"
+    )
+
     @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel = ScaleViewModel()
     @State private var showDevicePicker = false
@@ -99,15 +105,40 @@ struct ContentView: View {
             viewModel.startScanning()
             viewModel.restoreUnderlay(from: brewStore)
             scheduleSplashDismissal()
+            updateIdleTimer()
         }
         .onChange(of: viewModel.connectionState) { _, newState in
             if case .connected = newState {
                 dismissSplash()
             }
+            updateIdleTimer()
         }
         .onChange(of: scenePhase) { _, newPhase in
-            UIApplication.shared.isIdleTimerDisabled = (newPhase == .active)
+            updateIdleTimer()
+
+            switch newPhase {
+            case .active:
+                Self.lifecycleLogger.info("App foregrounded (active)")
+            case .background:
+                Self.lifecycleLogger.info("App backgrounded")
+            case .inactive:
+                Self.lifecycleLogger.info("App inactive")
+            @unknown default:
+                Self.lifecycleLogger.info("App phase changed: unknown")
+            }
         }
+    }
+
+    // MARK: - Idle Timer
+
+    private func updateIdleTimer() {
+        let isConnected: Bool = {
+            if case .connected = viewModel.connectionState { return true }
+            return false
+        }()
+        let shouldStayAwake = (scenePhase == .active) && isConnected
+        UIApplication.shared.isIdleTimerDisabled = shouldStayAwake
+        Self.lifecycleLogger.info("Idle timer disabled: \(shouldStayAwake) (phase=\(String(describing: scenePhase)), connected=\(isConnected))")
     }
 
     // MARK: - Splash

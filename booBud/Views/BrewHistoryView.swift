@@ -19,10 +19,9 @@ struct BrewHistoryView: View {
     // Edit sheet
     @State private var editingBrew: SavedBrew? = nil
 
-    private let dateFormatter: DateFormatter = {
+    private let timestampFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.dateStyle = .medium
-        f.timeStyle = .short
+        f.dateFormat = "MMM d · h:mm a"
         return f
     }()
 
@@ -47,14 +46,15 @@ struct BrewHistoryView: View {
                 if store.brews.isEmpty {
                     emptyState
                 } else {
-                    Section("Saved Brews") {
+                    Section {
                         ForEach(store.brews) { brew in
-                            brewRow(brew)
+                            brewRow(brew, showsSeparator: brew.id != store.brews.last?.id)
                         }
-                        .onDelete(perform: deleteBrews)
                     }
                 }
             }
+            .listSectionSpacing(.compact)
+            .contentMargins(.top, 8, for: .scrollContent)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -70,7 +70,10 @@ struct BrewHistoryView: View {
                 beanWeight = viewModel.lastBeanWeight
                 grindSetting = viewModel.lastGrindSetting
             }
+            .navigationTitle("Saved Brews")
+            .navigationBarTitleDisplayMode(.inline)
         }
+        .presentationDetents([.large])
     }
 
     // MARK: - Save section
@@ -213,65 +216,63 @@ struct BrewHistoryView: View {
         }
     }
 
-    private func brewRow(_ brew: SavedBrew) -> some View {
+    private func displayTitle(for brew: SavedBrew) -> String {
+        let trimmedNote = brew.note.trimmingCharacters(in: .whitespacesAndNewlines)
+        if brew.name.hasPrefix("Brew ") {
+            return trimmedNote.isEmpty ? "Saved Brew" : trimmedNote
+        }
+        return brew.name
+    }
+
+    private func secondaryNote(for brew: SavedBrew) -> String? {
+        let trimmedNote = brew.note.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedNote.isEmpty, !brew.name.hasPrefix("Brew ") else { return nil }
+        return trimmedNote
+    }
+
+    private func brewRow(_ brew: SavedBrew, showsSeparator: Bool) -> some View {
         return Button {
             dismiss()
             onRecall(brew)
         } label: {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(brew.name)
-                        .font(.body)
-                        .fontWeight(.medium)
+            VStack(alignment: .leading, spacing: 7) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(timestampFormatter.string(from: brew.date))
+                        .font(.callout.weight(.semibold))
                         .foregroundStyle(Color.warmSecondary)
-                    Button {
-                        editingBrew = brew
-                    } label: {
-                        Image(systemName: "pencil")
-                            .font(.caption2)
-                            .foregroundStyle(Color.warmSecondary.opacity(0.5))
+                        .lineLimit(1)
+                    if viewModel.underlayBrew?.id == brew.id {
+                        Text("Underlay")
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(.orange.opacity(0.82))
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 0.5)
+                            .overlay(RoundedRectangle(cornerRadius: 3).stroke(.orange.opacity(0.4), lineWidth: 1))
                     }
-                    .buttonStyle(.plain)
-                    Spacer()
-                    Text(dateFormatter.string(from: brew.date))
-                        .font(.caption)
-                        .foregroundStyle(Color.warmSecondary)
+                    Spacer(minLength: 8)
+                    Text(displayTitle(for: brew))
+                        .font(.caption2)
+                        .foregroundStyle(Color.warmSecondary.opacity(0.8))
+                        .lineLimit(1)
                 }
 
-                HStack(spacing: 6) {
-                    Image(systemName: "scalemass.fill")
+                if let note = secondaryNote(for: brew) {
+                    Text(note)
                         .font(.caption2)
-                        .foregroundStyle(Color.warmSecondary.opacity(0.6))
-                    Text(String(format: "%.1fg", brew.beanWeight))
-                        .font(.caption)
-                        .foregroundStyle(Color.warmSecondary)
-                    Image(systemName: "dial.medium.fill")
-                        .font(.caption2)
-                        .foregroundStyle(Color.warmSecondary.opacity(0.6))
-                        .scaleEffect(1.3)
-                    Text(grindString(brew.grindSetting))
-                        .font(.caption)
-                        .foregroundStyle(Color.warmSecondary)
-                    if !brew.note.isEmpty {
-                        Text("·")
-                            .font(.caption)
-                            .foregroundStyle(Color.warmSecondary.opacity(0.5))
-                        Text(brew.note)
-                            .font(.caption)
-                            .foregroundStyle(Color.warmSecondary)
-                            .lineLimit(1)
-                    }
+                        .foregroundStyle(Color.warmSecondary.opacity(0.82))
+                        .lineLimit(1)
                 }
 
-                // Thumbnail card + metadata row
                 HStack(alignment: .top, spacing: 10) {
-                    BrewThumbnailView(
-                        weightPoints: brew.weightPoints,
-                        flowPoints: brew.flowPoints
-                    )
-                    .frame(width: 130)
+                    VStack(alignment: .leading, spacing: 6) {
+                        BrewThumbnailView(
+                            weightPoints: brew.weightPoints,
+                            flowPoints: brew.flowPoints
+                        )
+                        .frame(width: 128)
+                    }
 
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 5) {
                         let effectiveStop = brew.flowStoppedAt
                             ?? (brew.weightPoints.contains { $0.value > 5.0 }
                                 ? brew.flowPoints.computeFlowStoppedAt(threshold: viewModel.flowStopThreshold)
@@ -293,8 +294,8 @@ struct BrewHistoryView: View {
                                 Text(formatBrewSeconds(brew.duration))
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                        // Weight + flow row
                         HStack(spacing: 6) {
                             Image(systemName: "scalemass")
                                 .foregroundStyle(.orange.opacity(0.8))
@@ -303,58 +304,91 @@ struct BrewHistoryView: View {
                             Image(systemName: "water.waves")
                             Text(String(format: "%.1f g/s", brew.peakFlow))
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                        // Underlay button
-                        if viewModel.underlayBrew?.id == brew.id {
-                            Button {
-                                viewModel.underlayBrew = nil
-                                dismiss()
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "chart.line.flattrend.xyaxis")
-                                    Text("Remove underlay")
-                                }
+                        HStack(spacing: 6) {
+                            Image(systemName: "scalemass.fill")
                                 .font(.caption2)
-                                .foregroundStyle(.orange.opacity(0.8))
-                                .padding(.vertical, 3)
-                                .padding(.horizontal, 6)
-                                .overlay(RoundedRectangle(cornerRadius: 5).stroke(.orange.opacity(0.5), lineWidth: 1))
-                            }
-                            .buttonStyle(.plain)
-                        } else {
-                            Button {
-                                viewModel.underlayBrew = brew
-                                viewModel.hideUnderlayChip = false
-                                dismiss()
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "chart.line.flattrend.xyaxis")
-                                    Text("Show as underlay")
-                                }
+                                .foregroundStyle(Color.warmSecondary.opacity(0.6))
+                            Text(String(format: "%.1fg", brew.beanWeight))
+                            Text("·").foregroundStyle(.secondary)
+                            Image(systemName: "dial.medium.fill")
                                 .font(.caption2)
-                                .foregroundStyle(.cyan.opacity(0.8))
-                                .padding(.vertical, 3)
-                                .padding(.horizontal, 6)
-                                .overlay(RoundedRectangle(cornerRadius: 5).stroke(.cyan.opacity(0.5), lineWidth: 1))
-                            }
-                            .buttonStyle(.plain)
+                                .foregroundStyle(Color.warmSecondary.opacity(0.6))
+                                .scaleEffect(1.3)
+                            Text(grindString(brew.grindSetting))
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 .font(.caption2)
                 .foregroundStyle(Color.warmSecondary)
+
+                HStack(alignment: .center) {
+                    if viewModel.underlayBrew?.id == brew.id {
+                        Button {
+                            viewModel.underlayBrew = nil
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chart.line.flattrend.xyaxis")
+                                Text("Remove underlay")
+                            }
+                            .font(.caption2)
+                            .foregroundStyle(.orange.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Button {
+                            viewModel.underlayBrew = brew
+                            viewModel.hideUnderlayChip = false
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chart.line.flattrend.xyaxis")
+                                Text("Show as underlay")
+                            }
+                            .font(.caption2)
+                            .foregroundStyle(.cyan.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    Spacer()
+                }
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, 1)
         }
+        .listRowSeparator(.hidden, edges: .top)
+        .listRowSeparator(showsSeparator ? .visible : .hidden, edges: .bottom)
+        .listRowSeparatorTint(Color.warmSecondary.opacity(0.45))
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            Button {
+                editingBrew = brew
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            .tint(.orange)
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                deleteBrew(brew)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+
+    private func deleteBrew(_ brew: SavedBrew) {
+        if viewModel.underlayBrew?.id == brew.id {
+            viewModel.underlayBrew = nil
+        }
+        store.delete(brew)
     }
 
     private func deleteBrews(at offsets: IndexSet) {
         for idx in offsets {
-            let brew = store.brews[idx]
-            if viewModel.underlayBrew?.id == brew.id {
-                viewModel.underlayBrew = nil
-            }
-            store.delete(brew)
+            deleteBrew(store.brews[idx])
         }
     }
 }
