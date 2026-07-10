@@ -13,11 +13,12 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 - **Flow-stop detection** — vertical dashed line + label marking when flow drops below threshold
 - **Peak weight annotation** — horizontal dashed line at the maximum weight reached
 - **Brew saving** — save each brew with auto-generated stats (duration, final weight, peak weight, peak flow)
-- **Bean weight & grind setting** — stepper controls (step 0.1), last-used values retained for next brew
-- **Brew history** — scrollable list with thumbnail charts, editable name/note/bean/grind, swipe to delete
-- **Underlay comparison** — overlay a past brew's graph as dashed ghost lines behind the live data
+- **Bean weight & grind setting** — stepper controls with configurable step size, last-used values retained
+- **Brew history** — scrollable list with thumbnail charts, swipe to edit or delete, inline underlay badge
+- **Underlay comparison** — overlay a past brew's graph behind the live data for reference
+- **Screen stays awake** — display sleep prevented while a scale is connected (auto-disables on disconnect)
 - **Battery level** from the scale with low-battery color warnings (yellow ≤20%, red ≤10%)
-- **Settings** — pour trigger threshold, flow axis auto-range or fixed max, flow-stop detection threshold
+- **Settings** — pour trigger threshold, flow axis auto-range or fixed max, flow-stop detection threshold, grind step size
 - **ScaleSimulator** — companion macOS app that simulates a Bookoo scale for testing
 
 ## Screenshots
@@ -46,7 +47,7 @@ The app stays installed for 7 days — just rebuild to refresh.
 
 booBud communicates with the Bookoo Mini Scale over Bluetooth Low Energy using the [official open-source protocol](https://github.com/BooKooCode/OpenSource):
 
-- **Service UUID**: `0xFFE0` (primary)
+- **Service UUID**: `0x0FFE` (primary)
 - **Weight notifications**: characteristic `0xFF11` (20-byte packets with grams, flow rate, battery, timer)
 - **Commands**: characteristic `0xFF12` (tare, timer start/stop/reset, mode switch)
 - **Device Name**: characteristic `0xFF1E` (readable, used for authoritative display name)
