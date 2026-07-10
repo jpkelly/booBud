@@ -178,15 +178,27 @@ struct BrewHistoryView: View {
         let name = brewName.trimmingCharacters(in: .whitespaces)
         guard !name.isEmpty else { return }
 
+        let weightPoints = viewModel.weightHistory.asGraphPoints
+        let flowPoints = viewModel.flowRateHistory.asGraphPoints
+        let bounds = BrewAxisBounds.compute(
+            weightPoints: weightPoints,
+            flowPoints: flowPoints,
+            flowAutoRange: viewModel.flowAutoRange,
+            flowMax: viewModel.flowMax
+        )
+
         store.add(
             name: name,
             note: brewNote.trimmingCharacters(in: .whitespacesAndNewlines),
-            weightPoints: viewModel.weightHistory.asGraphPoints,
-            flowPoints: viewModel.flowRateHistory.asGraphPoints,
+            weightPoints: weightPoints,
+            flowPoints: flowPoints,
             displayUnit: viewModel.displayUnit,
             beanWeight: beanWeight,
             grindSetting: grindSetting,
-            flowStoppedAt: viewModel.flowStoppedAt
+            flowStoppedAt: viewModel.flowStoppedAt,
+            axisMaxTime: bounds.maxTime,
+            axisMaxWeight: bounds.maxWeight,
+            axisMaxFlow: bounds.maxFlow
         )
         viewModel.lastBeanWeight = beanWeight
         viewModel.lastGrindSetting = grindSetting
@@ -267,7 +279,12 @@ struct BrewHistoryView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         BrewThumbnailView(
                             weightPoints: brew.weightPoints,
-                            flowPoints: brew.flowPoints
+                            flowPoints: brew.flowPoints,
+                            axisMaxTime: brew.axisMaxTime,
+                            axisMaxWeight: brew.axisMaxWeight,
+                            axisMaxFlow: brew.axisMaxFlow,
+                            fallbackFlowAutoRange: viewModel.flowAutoRange,
+                            fallbackFlowMax: viewModel.flowMax
                         )
                         .frame(width: 128)
                     }

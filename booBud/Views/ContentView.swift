@@ -56,7 +56,10 @@ struct ContentView: View {
                         flowStoppedAt: effectiveFlowStoppedAt,
                         peakWeight: effectivePeakWeight,
                         underlayBeanWeight: viewModel.underlayBrew?.beanWeight,
-                        underlayGrindSetting: viewModel.underlayBrew?.grindSetting
+                        underlayGrindSetting: viewModel.underlayBrew?.grindSetting,
+                        axisMaxTimeOverride: recalledBrew?.axisMaxTime,
+                        axisMaxWeightOverride: recalledBrew?.axisMaxWeight,
+                        axisMaxFlowOverride: recalledBrew?.axisMaxFlow
                     )
                         .frame(height: 200)
                         .contentShape(Rectangle())

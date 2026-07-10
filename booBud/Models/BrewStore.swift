@@ -28,7 +28,10 @@ final class BrewStore {
         displayUnit: WeightUnit,
         beanWeight: Double = 18.0,
         grindSetting: Double = 2.0,
-        flowStoppedAt: Double? = nil
+        flowStoppedAt: Double? = nil,
+        axisMaxTime: Double? = nil,
+        axisMaxWeight: Double? = nil,
+        axisMaxFlow: Double? = nil
     ) {
         let brew = SavedBrew(
             name: name,
@@ -38,7 +41,10 @@ final class BrewStore {
             displayUnit: displayUnit,
             beanWeight: beanWeight,
             grindSetting: grindSetting,
-            flowStoppedAt: flowStoppedAt
+            flowStoppedAt: flowStoppedAt,
+            axisMaxTime: axisMaxTime,
+            axisMaxWeight: axisMaxWeight,
+            axisMaxFlow: axisMaxFlow
         )
         brews.insert(brew, at: 0)
         persist()

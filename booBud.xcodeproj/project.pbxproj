@@ -21,6 +21,7 @@
 		6E394D86F87D623A0C536071 /* ControlBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */; };
 		6E5800D136A52C1CAC0E3452 /* ScaleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */; };
 		7012EEA7BEC596FE48E49720 /* BrewTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */; };
+		76F1080DB2BAF7FF728E302E /* BrewAxisBounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2521253A54001CF213BCCC /* BrewAxisBounds.swift */; };
 		7778D3719AC6FCAC2DECE824 /* BrewThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423882FD314CD6D322F4D055 /* BrewThumbnailView.swift */; };
 		8680C02F1F010B1241EAAE7F /* GraphPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */; };
 		8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1382B84BD4DB4640CF0D9FD /* BrewHistoryView.swift */; };
@@ -57,6 +58,7 @@
 		8E4715CE90AFA987DAEF2D24 /* BooBudApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooBudApp.swift; sourceTree = "<group>"; };
 		9BDC61A32DFE1F3C066DA5BF /* DeviceDiscoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryView.swift; sourceTree = "<group>"; };
 		AA342A6EF04E937271D7F41A /* ScaleReading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleReading.swift; sourceTree = "<group>"; };
+		AC2521253A54001CF213BCCC /* BrewAxisBounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrewAxisBounds.swift; sourceTree = "<group>"; };
 		B5647C021CEFB9DF9B12393D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C5826C804F3B46EBAD5F65A5 /* ControlBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlBarView.swift; sourceTree = "<group>"; };
 		CCCF79732B57BACEB896F6E1 /* ScaleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleViewModel.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 		A60E46B28A6BF6712852AC14 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				AC2521253A54001CF213BCCC /* BrewAxisBounds.swift */,
 				3C4244DC4350D1DF43708272 /* BrewStore.swift */,
 				4E3F4DE81367B3A3AFCE4BF7 /* BrewTimerState.swift */,
 				F0AA9E98797F124DCD01D6EA /* GraphPoint.swift */,
@@ -267,6 +270,7 @@
 			files = (
 				FE4756FD3CCA41A28759BF97 /* BooBudApp.swift in Sources */,
 				0F95DFE745072417AC994E8A /* BookooProtocol.swift in Sources */,
+				76F1080DB2BAF7FF728E302E /* BrewAxisBounds.swift in Sources */,
 				8791120D2A269C40151D0740 /* BrewHistoryView.swift in Sources */,
 				961BF3F4C7FA7AAE413238D6 /* BrewStore.swift in Sources */,
 				7778D3719AC6FCAC2DECE824 /* BrewThumbnailView.swift in Sources */,

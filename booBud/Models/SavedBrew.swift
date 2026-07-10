@@ -20,6 +20,19 @@ struct SavedBrew: Codable, Identifiable, Equatable {
     /// before this feature existed; can be computed post-hoc from flowPoints.
     let flowStoppedAt: Double?
 
+    /// Persisted X-axis (time) maximum as computed at save time. Nil for legacy
+    /// brews saved before axis-bounds persistence; consumers should fall back
+    /// to `BrewAxisBounds.compute(...)` in that case.
+    let axisMaxTime: Double?
+
+    /// Persisted weight Y-axis maximum as computed at save time.
+    let axisMaxWeight: Double?
+
+    /// Persisted flow Y-axis maximum as computed at save time. Reflects the
+    /// user's `flowAutoRange`/`flowMax` settings that were in effect when the
+    /// brew was recorded.
+    let axisMaxFlow: Double?
+
     // MARK: - Computed stats
 
     /// Total brew duration in seconds (from the last data point).
@@ -61,7 +74,10 @@ struct SavedBrew: Codable, Identifiable, Equatable {
         displayUnit: WeightUnit,
         beanWeight: Double = 18.0,
         grindSetting: Double = 2.0,
-        flowStoppedAt: Double? = nil
+        flowStoppedAt: Double? = nil,
+        axisMaxTime: Double? = nil,
+        axisMaxWeight: Double? = nil,
+        axisMaxFlow: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -73,6 +89,9 @@ struct SavedBrew: Codable, Identifiable, Equatable {
         self.beanWeight = beanWeight
         self.grindSetting = grindSetting
         self.flowStoppedAt = flowStoppedAt
+        self.axisMaxTime = axisMaxTime
+        self.axisMaxWeight = axisMaxWeight
+        self.axisMaxFlow = axisMaxFlow
     }
 
     // MARK: - Codable (backward-compatible)
@@ -80,6 +99,7 @@ struct SavedBrew: Codable, Identifiable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case id, date, name, note, weightPoints, flowPoints, displayUnitRaw
         case beanWeight, grindSetting, flowStoppedAt
+        case axisMaxTime, axisMaxWeight, axisMaxFlow
     }
 
     init(from decoder: Decoder) throws {
@@ -94,5 +114,8 @@ struct SavedBrew: Codable, Identifiable, Equatable {
         beanWeight = try c.decodeIfPresent(Double.self, forKey: .beanWeight) ?? 18.0
         grindSetting = try c.decodeIfPresent(Double.self, forKey: .grindSetting) ?? 2.0
         flowStoppedAt = try c.decodeIfPresent(Double.self, forKey: .flowStoppedAt)
+        axisMaxTime = try c.decodeIfPresent(Double.self, forKey: .axisMaxTime)
+        axisMaxWeight = try c.decodeIfPresent(Double.self, forKey: .axisMaxWeight)
+        axisMaxFlow = try c.decodeIfPresent(Double.self, forKey: .axisMaxFlow)
     }
 }

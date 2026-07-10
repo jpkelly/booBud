@@ -21,6 +21,14 @@ struct WeightGraphView: View {
     let underlayBeanWeight: Double?
     let underlayGrindSetting: Double?
 
+    /// Optional axis-max overrides. When non-nil these are used verbatim,
+    /// bypassing the computed `effectiveMax*` values. Used when recalling a
+    /// saved brew so the graph exactly matches the persisted axes shown in
+    /// the thumbnail.
+    var axisMaxTimeOverride: Double? = nil
+    var axisMaxWeightOverride: Double? = nil
+    var axisMaxFlowOverride: Double? = nil
+
     private let yTickCount = 4
     private let xTickCount = 4
     private let leftAxisWidth: CGFloat = 34
@@ -271,12 +279,14 @@ struct WeightGraphView: View {
     }
 
     private var effectiveMaxTime: Double {
+        if let override = axisMaxTimeOverride { return override }
         let liveMax = data.last?.elapsed ?? 0
         let underlayMax = underlayWeight.last?.elapsed ?? 0
         return max(max(liveMax, underlayMax), 30)
     }
 
     private var effectiveMaxWeight: Double {
+        if let override = axisMaxWeightOverride { return override }
         let dataMax = max(data.map(\.weight).max() ?? 0,
                           underlayWeight.map(\.weight).max() ?? 0)
         let ceil10 = ceil(dataMax / 10) * 10
@@ -288,6 +298,7 @@ struct WeightGraphView: View {
     }
 
     private var effectiveMaxFlow: Double {
+        if let override = axisMaxFlowOverride { return override }
         guard flowAutoRange else { return flowMax }
         let flowMax = flowData.map(\.flowRate).max() ?? 0
         let flowMin = flowData.map(\.flowRate).min() ?? 0

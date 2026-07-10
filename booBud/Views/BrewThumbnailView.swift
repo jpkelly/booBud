@@ -7,6 +7,19 @@ struct BrewThumbnailView: View {
     let weightPoints: [GraphPoint]
     let flowPoints: [GraphPoint]
 
+    /// Persisted axis maxes captured at save time (or nil for legacy brews and
+    /// previews). When non-nil these are used verbatim so the thumbnail matches
+    /// the graph shown when the brew was recorded — pixel-for-pixel bounds.
+    var axisMaxTime: Double? = nil
+    var axisMaxWeight: Double? = nil
+    var axisMaxFlow: Double? = nil
+
+    /// Fallback flow settings used only when `axisMaxFlow` is nil (legacy
+    /// brews). Callers should pass the current viewModel settings so legacy
+    /// brews honor the user's live-graph configuration.
+    var fallbackFlowAutoRange: Bool = true
+    var fallbackFlowMax: Double = 5
+
     /// Aspect ratio of the plot area (default 16:9 — matches the feel of the
     /// main graph on the home screen).
     var aspectRatio: CGFloat = 16.0 / 9.0
@@ -116,28 +129,28 @@ struct BrewThumbnailView: View {
 
     // MARK: - Scaling
 
+    /// Fallback bounds when the caller didn't pass persisted values (legacy
+    /// brews / previews). Uses the caller-provided flow settings so legacy
+    /// brews honor the user's current live-graph configuration.
+    private var fallbackBounds: (maxTime: Double, maxWeight: Double, maxFlow: Double) {
+        BrewAxisBounds.compute(
+            weightPoints: weightPoints,
+            flowPoints: flowPoints,
+            flowAutoRange: fallbackFlowAutoRange,
+            flowMax: fallbackFlowMax
+        )
+    }
+
     private var maxTime: Double {
-        let wEnd = weightPoints.last?.elapsed ?? 0
-        let fEnd = flowPoints.last?.elapsed ?? 0
-        let m = max(wEnd, fEnd)
-        return m > 0 ? m : 30
+        axisMaxTime ?? fallbackBounds.maxTime
     }
 
     private var maxWeight: Double {
-        let wMax = weightPoints.map(\.value).max() ?? 0
-        if wMax <= 0 { return 1 }
-        if wMax < 10 { return ceil(wMax) }
-        if wMax < 100 { return ceil(wMax / 10) * 10 }
-        return ceil(wMax / 50) * 50
+        axisMaxWeight ?? fallbackBounds.maxWeight
     }
 
     private var maxFlow: Double {
-        let fMax = flowPoints.map(\.value).max() ?? 0
-        if fMax <= 0 { return 1 }
-        if fMax < 1 { return 1 }
-        if fMax < 5 { return ceil(fMax) }
-        if fMax < 10 { return ceil(fMax / 2) * 2 }
-        return ceil(fMax / 5) * 5
+        axisMaxFlow ?? fallbackBounds.maxFlow
     }
 }
 
