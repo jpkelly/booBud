@@ -5,7 +5,7 @@ The apps I found for the Bookoo scale were overcomplicated and awkward to use. I
 ## Features
 
 - **BLE connection** to Bookoo Mini Scale (official protocol) with auto-reconnect
-- **Live weight display** — grams or ounces, large readable digits
+- **Live weight display** — grams, large readable digits
 - **Brew timer** — start/stop/reset with 0.1s precision, or auto-start on pour detection
 - **Tare & Brew button** — one tap to zero the scale and start the timer
 - **Auto-detect pour** — optionally auto-starts the timer when weight crosses a configurable threshold
