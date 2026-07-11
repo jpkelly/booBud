@@ -1,5 +1,7 @@
 # Xcode
 *.xcuserdata/
+*.xcuserdatad/
+*.xcuserstate
 *.xcworkspace/xcuserdata/
 *.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 DerivedData/
