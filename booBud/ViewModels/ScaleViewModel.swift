@@ -66,17 +66,6 @@ final class ScaleViewModel {
         didSet { UserDefaults.standard.set(hideUnderlayChip, forKey: "hideUnderlayChip") }
     }
 
-    /// Whether recall/underlay status indicators should float over the graph
-    /// (true) or stack above it and push it down (false). On by default.
-    var graphOverlayIndicators: Bool = {
-        if UserDefaults.standard.object(forKey: "graphOverlayIndicators") == nil {
-            return true
-        }
-        return UserDefaults.standard.bool(forKey: "graphOverlayIndicators")
-    }() {
-        didSet { UserDefaults.standard.set(graphOverlayIndicators, forKey: "graphOverlayIndicators") }
-    }
-
     /// Weight threshold in grams that triggers auto-start when crossed.
     var pourTriggerGrams: Double = {
         let val = UserDefaults.standard.double(forKey: "pourTriggerGrams")
@@ -338,7 +327,10 @@ final class ScaleViewModel {
         }
     }
 
-    func resetTimer() {
+    /// Clear the local live-session state (history, timer, flow-stop tracking)
+    /// without sending a reset command to the scale. Used after saving a brew
+    /// so the live buffers don't linger in a stale, unrecoverable state.
+    func clearSession() {
         brewTimer.reset()
         weightHistory.removeAll()
         flowRateHistory.removeAll()
@@ -347,6 +339,10 @@ final class ScaleViewModel {
         flowBelowThresholdSince = nil
         flowHasBeenActive = false
         stopDisplayTimer()
+    }
+
+    func resetTimer() {
+        clearSession()
         bleController.sendResetTimer()
     }
 

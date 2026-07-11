@@ -16,6 +16,10 @@ struct BrewHistoryView: View {
     @State private var beanWeight: Double = 18.0
     @State private var grindSetting: Double = 2.0
 
+    /// The brew just saved in this sheet session, if any. When set, tapping
+    /// Done recalls it so the live page shows exactly what was saved.
+    @State private var justSavedBrew: SavedBrew? = nil
+
     // Edit sheet
     @State private var editingBrew: SavedBrew? = nil
 
@@ -57,7 +61,12 @@ struct BrewHistoryView: View {
             .contentMargins(.top, 8, for: .scrollContent)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Done") {
+                        if let brew = justSavedBrew {
+                            onRecall(brew)
+                        }
+                        dismiss()
+                    }
                 }
             }
             .sheet(item: $editingBrew) { brew in
@@ -120,11 +129,6 @@ struct BrewHistoryView: View {
                 Text("Brew saved!")
                     .fontWeight(.medium)
                 Spacer()
-                Button("Save Another") {
-                    hasSaved = false
-                    brewNote = ""
-                }
-                .font(.callout)
             }
         }
     }
@@ -187,7 +191,7 @@ struct BrewHistoryView: View {
             flowMax: viewModel.flowMax
         )
 
-        store.add(
+        let brew = store.add(
             name: name,
             note: brewNote.trimmingCharacters(in: .whitespacesAndNewlines),
             weightPoints: weightPoints,
@@ -202,6 +206,8 @@ struct BrewHistoryView: View {
         )
         viewModel.lastBeanWeight = beanWeight
         viewModel.lastGrindSetting = grindSetting
+        justSavedBrew = brew
+        viewModel.clearSession()
         hasSaved = true
     }
 

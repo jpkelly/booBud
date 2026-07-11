@@ -19,7 +19,9 @@ final class BrewStore {
 
     // MARK: - Public API
 
-    /// Save the current brew session to disk.
+    /// Save the current brew session to disk. Returns the created brew so
+    /// callers can (for example) immediately recall it.
+    @discardableResult
     func add(
         name: String,
         note: String = "",
@@ -32,7 +34,7 @@ final class BrewStore {
         axisMaxTime: Double? = nil,
         axisMaxWeight: Double? = nil,
         axisMaxFlow: Double? = nil
-    ) {
+    ) -> SavedBrew {
         let brew = SavedBrew(
             name: name,
             note: note,
@@ -49,6 +51,7 @@ final class BrewStore {
         brews.insert(brew, at: 0)
         persist()
         logger.info("Saved brew '\(name)' — \(brew.weightPoints.count) weight, \(brew.flowPoints.count) flow points")
+        return brew
     }
 
     /// Delete a brew by id.
