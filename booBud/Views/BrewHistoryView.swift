@@ -108,6 +108,15 @@ struct BrewHistoryView: View {
                 Spacer(minLength: 12)
 
                 Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                        .font(.callout.weight(.medium))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+
+                Button {
                     saveBrew()
                 } label: {
                     Text("Save")
@@ -129,6 +138,10 @@ struct BrewHistoryView: View {
                 Text("Brew saved!")
                     .fontWeight(.medium)
                 Spacer()
+            }
+            .task {
+                try? await Task.sleep(for: .seconds(5))
+                hasSaved = false
             }
         }
     }
