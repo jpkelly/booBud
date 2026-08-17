@@ -123,15 +123,40 @@ struct SettingsView: View {
 
     private var autoStopCard: some View {
         settingsCard {
-            settingToggle("Auto-stop timer", isOn: $viewModel.autoStopEnabled)
+            HStack {
+                Text("Auto-stop timer")
+                    .font(.callout)
+                Spacer()
+                Picker("Auto-stop mode", selection: $viewModel.autoStopModeRaw) {
+                    ForEach(ScaleViewModel.AutoStopMode.allCases, id: \.self) { mode in
+                        Text(mode.label).tag(mode.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .controlSize(.small)
+                .frame(maxWidth: 180)
+            }
 
-            if viewModel.autoStopEnabled {
+            switch viewModel.autoStopMode {
+            case .off:
+                EmptyView()
+            case .time:
                 cardDivider
                 sliderSetting(
                     title: "Stop after",
                     value: String(format: "%.0f s", viewModel.autoStopSeconds)
                 ) {
                     Slider(value: $viewModel.autoStopSeconds, in: 5...120, step: 1) {
+                        Text("Seconds")
+                    }
+                }
+            case .flowStop:
+                cardDivider
+                sliderSetting(
+                    title: "Delay after flow stops",
+                    value: String(format: "%.1f s", viewModel.autoStopFlowDelay)
+                ) {
+                    Slider(value: $viewModel.autoStopFlowDelay, in: 0...5, step: 0.5) {
                         Text("Seconds")
                     }
                 }

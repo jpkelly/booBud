@@ -24,9 +24,31 @@ final class ScaleViewModel {
     /// Flow rate data points recorded while timer is running: (elapsed seconds, flow rate in g/s).
     var flowRateHistory: [(elapsed: Double, flowRate: Double)] = []
 
-    /// Auto-stop timer settings — stored properties synced to UserDefaults.
-    var autoStopEnabled: Bool = UserDefaults.standard.bool(forKey: "autoStopEnabled") {
-        didSet { UserDefaults.standard.set(autoStopEnabled, forKey: "autoStopEnabled") }
+    /// Auto-stop timer mode — off, fixed time, or on flow stop.
+    enum AutoStopMode: Int, CaseIterable {
+        case off = 0, time, flowStop
+
+        var label: String {
+            switch self {
+            case .off: return "Off"
+            case .time: return "Time"
+            case .flowStop: return "Flow stop"
+            }
+        }
+    }
+    var autoStopModeRaw: Int = {
+        if UserDefaults.standard.object(forKey: "autoStopMode") == nil {
+            // Migrate legacy autoStopEnabled bool → mode
+            if UserDefaults.standard.bool(forKey: "autoStopEnabled") { return AutoStopMode.time.rawValue }
+            return AutoStopMode.off.rawValue
+        }
+        return UserDefaults.standard.integer(forKey: "autoStopMode")
+    }() {
+        didSet { UserDefaults.standard.set(autoStopModeRaw, forKey: "autoStopMode") }
+    }
+    var autoStopMode: AutoStopMode {
+        get { AutoStopMode(rawValue: autoStopModeRaw) ?? .off }
+        set { autoStopModeRaw = newValue.rawValue }
     }
     var autoStopSeconds: Double = {
         let val = UserDefaults.standard.double(forKey: "autoStopSeconds")
@@ -34,6 +56,16 @@ final class ScaleViewModel {
     }() {
         didSet { UserDefaults.standard.set(autoStopSeconds, forKey: "autoStopSeconds") }
     }
+    /// Seconds to wait after flow stops before stopping the timer (flow-stop mode).
+    var autoStopFlowDelay: Double = {
+        let key = "autoStopFlowDelay"
+        if UserDefaults.standard.object(forKey: key) == nil { return 2 }
+        return UserDefaults.standard.double(forKey: key)
+    }() {
+        didSet { UserDefaults.standard.set(autoStopFlowDelay, forKey: "autoStopFlowDelay") }
+    }
+    /// Internal: elapsed time when flow was confirmed stopped for the auto-stop-on-flow-stop mode.
+    private var autoStopFlowObservedAt: Double?
 
     /// Auto-detect pour start and auto-start brew timer.
     var autoDetectPour: Bool = UserDefaults.standard.bool(forKey: "autoDetectPour") {
@@ -311,6 +343,7 @@ final class ScaleViewModel {
         flowStoppedAt = nil
         flowBelowThresholdSince = nil
         flowHasBeenActive = false
+        autoStopFlowObservedAt = nil
         brewTimer.startOrResume()
         startDisplayTimer()
     }
@@ -338,6 +371,7 @@ final class ScaleViewModel {
         hideFlowStopChip = false
         flowBelowThresholdSince = nil
         flowHasBeenActive = false
+        autoStopFlowObservedAt = nil
         stopDisplayTimer()
     }
 
@@ -366,15 +400,24 @@ final class ScaleViewModel {
                     self.weightHistory.append((elapsed: self.brewTimer.elapsed, weight: 0))
                     self.flowRateHistory.append((elapsed: self.brewTimer.elapsed, flowRate: 0))
                 }
-                // Auto-stop check
-                if self.autoStopEnabled && self.brewTimer.elapsed >= self.autoStopSeconds {
+                // Auto-stop: fixed time mode
+                if self.autoStopMode == .time && self.brewTimer.elapsed >= self.autoStopSeconds {
                     self.brewTimer.stop()
                     self.stopDisplayTimer()
                     self.bleController.sendStopTimer()
                 }
+                // Auto-stop: on flow stop — wait autoStopFlowDelay after flow confirmed stopped
+                if self.autoStopMode == .flowStop, let stoppedAt = self.flowStoppedAt {
+                    if self.autoStopFlowObservedAt == nil { self.autoStopFlowObservedAt = self.brewTimer.elapsed }
+                    if self.brewTimer.elapsed - self.autoStopFlowObservedAt! >= self.autoStopFlowDelay {
+                        self.brewTimer.stop()
+                        self.stopDisplayTimer()
+                        self.bleController.sendStopTimer()
+                    }
+                }
 
-                // Flow-stop detection (only fire once per brew, after weight > 5g and flow has been active)
-                if self.flowStopDetectionEnabled && self.flowStoppedAt == nil {
+                // Flow-stop detection — runs when the chip is enabled OR auto-stop flow-stop mode is active
+                if (self.flowStopDetectionEnabled || self.autoStopMode == .flowStop) && self.flowStoppedAt == nil {
                     let maxWeight = self.weightHistory.map(\.weight).max() ?? 0
                     if maxWeight > 5.0 {
                         let currentFlow = self.currentReading?.flowRate ?? 0
