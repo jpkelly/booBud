@@ -108,6 +108,8 @@ struct BrewHistoryView: View {
                 Spacer(minLength: 12)
 
                 Button {
+                    viewModel.tare()
+                    viewModel.resetTimer()
                     dismiss()
                 } label: {
                     Text("Cancel")
@@ -140,7 +142,7 @@ struct BrewHistoryView: View {
                 Spacer()
             }
             .task {
-                try? await Task.sleep(for: .seconds(5))
+                try? await Task.sleep(for: .seconds(3))
                 hasSaved = false
             }
         }
